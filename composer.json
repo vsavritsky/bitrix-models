@@ -1,0 +1,16 @@
+{
+    "name": "vsavritsky/bitrix-models",
+    "description": "Библиотека для работы с инфоблоками, хайлоадами и т.п как сущностями",
+    "type": "library",
+    "require": {
+    	"php": ">=7.1",
+        "vsavritsky/bitrix-filter-builder": "^0.0.1"
+    },
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "BitrixModels\\": "src"
+        }
+    }
+    
+}
