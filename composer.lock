@@ -4,8 +4,39 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3e725cbebe9fcc642a8ba1f314cbf101",
+    "content-hash": "db3a25621171f2c784f0c864ae704567",
     "packages": [
+        {
+            "name": "vsavritsky/bitrix-class-loader-helper",
+            "version": "0.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vsavritsky/bitrix-class-loader-helper.git",
+                "reference": "5be2db1b7399b51781be1c5a418c475fe7a258a2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vsavritsky/bitrix-class-loader-helper/zipball/5be2db1b7399b51781be1c5a418c475fe7a258a2",
+                "reference": "5be2db1b7399b51781be1c5a418c475fe7a258a2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "BitrixClassLoaderHelper\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Библиотека для авторегистрации классов",
+            "support": {
+                "issues": "https://github.com/vsavritsky/bitrix-class-loader-helper/issues",
+                "source": "https://github.com/vsavritsky/bitrix-class-loader-helper/tree/0.0.1"
+            },
+            "time": "2021-08-13T12:45:15+00:00"
+        },
         {
             "name": "vsavritsky/bitrix-filter-builder",
             "version": "0.0.1",

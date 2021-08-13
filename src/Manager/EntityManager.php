@@ -2,24 +2,24 @@
 
 namespace BitrixModels\Manager;
 
+use BitrixClassLoaderHelper\ClassLoaderHelper;
 use BitrixModels\Entity;
-use BitrixModels\Helper\DirectoryHelper;
 use BitrixModels\Repository;
 use RecursiveDirectoryIterator;
 
 class EntityManager
 {
-    /** @var DirectoryHelper */
-    protected $directoryHelper;
+    /** @var ClassLoaderHelper */
+    protected $classLoaderHelper;
 
     public function __construct()
     {
-        $this->directoryHelper = new DirectoryHelper();
+        $this->classLoaderHelper = new ClassLoaderHelper();
     }
 
     protected $repositories = [];
 
-    public function autoRegister(string $directory)
+    public function register(string $directory): void
     {
         $iterator = new \RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
         $allFiles = array_filter(iterator_to_array($iterator), function ($file) {
@@ -27,7 +27,7 @@ class EntityManager
         });
 
         foreach ($allFiles as $file) {
-            $class = $this->directoryHelper->getClassFullNameFromFile($file);
+            $class = $this->classLoaderHelper->getClassFullNameFromFile($file);
 
             try {
                 $reflectionClass = new \ReflectionClass($class);
@@ -41,13 +41,15 @@ class EntityManager
         }
     }
 
-    public function addRepository(Repository\BaseRepository $baseRepository)
+    public function addRepository(Repository\BaseRepository $baseRepository): void
     {
         $this->repositories[] = $baseRepository;
     }
 
-    public function getRepository($class)
+    public function getRepository($class): ?Repository\BaseRepository
     {
+        $repository = null;
+
         foreach ($this->repositories as $repositoryItem) {
             if ($repositoryItem->getClassModel() === $class) {
                 return $repositoryItem;

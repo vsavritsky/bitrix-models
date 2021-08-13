@@ -4,7 +4,8 @@
     "type": "library",
     "require": {
     	"php": ">=7.1",
-        "vsavritsky/bitrix-filter-builder": "^0.0.1"
+        "vsavritsky/bitrix-filter-builder": "^0.0.1",
+        "vsavritsky/bitrix-class-loader-helper": "^0.0.1"
     },
     "minimum-stability": "stable",
     "autoload": {
