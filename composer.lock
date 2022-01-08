@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "db3a25621171f2c784f0c864ae704567",
+    "content-hash": "56121bb0b7a854e2106fb59648c7a8cf",
     "packages": [
         {
             "name": "vsavritsky/bitrix-class-loader-helper",
@@ -39,16 +39,16 @@
         },
         {
             "name": "vsavritsky/bitrix-filter-builder",
-            "version": "0.0.1",
+            "version": "0.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vsavritsky/bitrix-filter-builder.git",
-                "reference": "06333cb3a0dec26e79ec58221ce22bca46ec884b"
+                "reference": "a7e8381959f5807712cda83220a6dda5ac9d8f58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vsavritsky/bitrix-filter-builder/zipball/06333cb3a0dec26e79ec58221ce22bca46ec884b",
-                "reference": "06333cb3a0dec26e79ec58221ce22bca46ec884b",
+                "url": "https://api.github.com/repos/vsavritsky/bitrix-filter-builder/zipball/a7e8381959f5807712cda83220a6dda5ac9d8f58",
+                "reference": "a7e8381959f5807712cda83220a6dda5ac9d8f58",
                 "shasum": ""
             },
             "require": {
@@ -64,9 +64,9 @@
             "description": "Библиотека для простого создания фильтра",
             "support": {
                 "issues": "https://github.com/vsavritsky/bitrix-filter-builder/issues",
-                "source": "https://github.com/vsavritsky/bitrix-filter-builder/tree/0.0.1"
+                "source": "https://github.com/vsavritsky/bitrix-filter-builder/tree/0.0.2"
             },
-            "time": "2021-08-13T08:03:52+00:00"
+            "time": "2021-08-18T15:29:17+00:00"
         }
     ],
     "packages-dev": [],
