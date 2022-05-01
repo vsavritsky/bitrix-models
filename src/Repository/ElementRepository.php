@@ -43,7 +43,10 @@ class ElementRepository extends BaseRepository
         $filter = new Filter();
         $filter->eq('ID', $id);
 
-        return $this->getQueryBuilder()->filter($filter)->getOneResult();
+        $select = new Select();
+        $select->withProperties();
+
+        return $this->getQueryBuilder()->filter($filter)->select($select)->getOneResult();
     }
 
     public function findOneByFilter(Filter $filter = null, Sort $sort = null): ?BaseModel

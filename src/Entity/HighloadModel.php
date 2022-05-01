@@ -66,9 +66,11 @@ class HighloadModel extends BaseModel
 
     public function __call($name, $arguments)
     {
+        $field = lcfirst($name);
         $action = substr($name, 0, 3);
         $field = substr($name, 3, strlen($name));
-        $field = $this->toCamelCase($field);
+        //$field = $this->toCamelCase($field);
+        $field = lcfirst($field);
 
         if ($action == 'get') {
             return $this->__get($field);
@@ -91,12 +93,22 @@ class HighloadModel extends BaseModel
     public function __get($name)
     {
         $result = null;
+
+        if (isset($this->fields[$name])) {
+            return $this->fields[$name];
+        }
+
         $name = $this->toCamelCase($name);
 
         if (isset($this->fields[$name])) {
-            $result = $this->fields[$name];
+            return $this->fields[$name];
         }
 
-        return $result;
+        return null;
+    }
+
+    public function toArray(): array
+    {
+        return [];
     }
 }

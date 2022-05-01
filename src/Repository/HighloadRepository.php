@@ -5,14 +5,21 @@ namespace BitrixModels\Repository;
 use Bitrix\Highloadblock as HL;
 use Bitrix\Main\Entity;
 use BitrixModels\Entity\BaseModel;
-use BitrixFilterBuilder\Filter;
+use BitrixModels\Model\Filter;
 use BitrixModels\Model\ListResult;
 use BitrixModels\Model\Pagination;
 use BitrixModels\Model\Select;
 use BitrixModels\Model\Sort;
+use BitrixModels\QueryBuilder\ElementQueryBuilder;
+use BitrixModels\QueryBuilder\HighloadQueryBuilder;
 
 class HighloadRepository extends BaseRepository
 {
+    public function getQueryBuilder(): HighloadQueryBuilder
+    {
+        return new HighloadQueryBuilder(self::getClassModel());
+    }
+
     protected $entityDataClass;
 
     protected $lastError = '';
@@ -21,8 +28,8 @@ class HighloadRepository extends BaseRepository
     {
         parent::__construct($class);
 
-        $this->hlblock = HL\HighloadBlockTable::getById($this->getClassModel()::iblockId())->fetch();
-        $entity = HL\HighloadBlockTable::compileEntity($this->hlblock);
+        $this->class = $class;
+        $entity = HL\HighloadBlockTable::compileEntity(HL\HighloadBlockTable::getById($this->getClassModel()::iblockId())->fetch());
         $this->entityDataClass = $entity->getDataClass();
     }
 
@@ -31,7 +38,10 @@ class HighloadRepository extends BaseRepository
         $filter = new Filter();
         $filter->eq('ID', $id);
 
-        return $this->findOneByFilter($filter);
+        $select = new Select();
+        $select->withProperties();
+
+        return $this->getQueryBuilder()->filter($filter)->select($select)->getOneResult();
     }
 
     public function findByExtId($extId): ?BaseModel
@@ -44,69 +54,34 @@ class HighloadRepository extends BaseRepository
 
     public function findOneByFilter(Filter $filter = null, Sort $sort = null): ?BaseModel
     {
-        $filter = $this->getResultFilter($filter);
-
-        $params = [
-            'select' => ['*'],
-            'filter' => $filter->getResult(),
-            'limit' => 1,
-            'offset' => 0
-        ];
-
-        if ($sort) {
-            $params['order'] = $sort->getResult();
-        }
-
-        $rsData = $this->entityDataClass::getList($params);
-
-        if ($element = $rsData->Fetch()) {
-            $result = $this->getNewEntity()->mapData($element);
-        }
-
-        return $result;
+        return $this->getQueryBuilder()->filter($filter)->sort($sort)->getOneResult();
     }
 
     public function countByFilter(Filter $filter = null): int
     {
-        $filter = $this->getResultFilter($filter);
+        if (!$filter) {
+            $filter = new Filter();
+        }
 
-        $rsData = $this->entityDataClass::getList([
-            "select" => ["*"],
-            "order" => ["ID" => "ASC"],
-            "filter" => $filter->getResult()
-        ]);
-
-        return (int)$rsData->getSelectedRowsCount();
+        return $this->getQueryBuilder()->filter($filter)->getCountResult();
     }
 
     public function findByFilter(Select $select = null, Filter $filter = null, Sort $sort = null, int $count = 10, int $page = 1): ListResult
     {
-        $filter = $this->getResultFilter($filter);
-
-        $params = [
-            'select' => ['*'],
-            'filter' => $filter->getResult(),
-            'limit' => $count,
-            'offset' => ($page - 1) * $count,
-        ];
-
-        if ($sort) {
-            $params['order'] = $sort->getResult();
+        if (!$filter) {
+            $filter = new Filter();
         }
 
-        $dbItems = $this->entityDataClass::getList($params);
-
-        while ($element = $dbItems->Fetch()) {
-            $list[] = $this->getNewEntity()->mapData($element);
+        if (!$sort) {
+            $sort = new Sort();
         }
 
-        $pagination = new Pagination($page, $count, ceil($dbItems->getSelectedRowsCount() / $count), $dbItems->getSelectedRowsCount());
+        if (!$select) {
+            $select = new Select();
+            $select->withProperties();
+        }
 
-        $result = new ListResult();
-        $result->setList($list);
-        $result->setPagination($pagination);
-
-        return $result;
+        return $this->getQueryBuilder()->select($select)->filter($filter)->sort($sort)->page($page)->count($count)->getResult();
     }
 
     public function add($data)
