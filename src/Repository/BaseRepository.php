@@ -34,6 +34,12 @@ abstract class BaseRepository
 
     abstract public function findByExtId($extId): ?BaseModel;
 
+    public function refresh(BaseModel &$model): BaseModel
+    {
+        $model = $this->findById($model->getId()->getValue());
+        return $model;
+    }
+
     public function save(BaseModel &$model): ?BaseModel
     {
         if (static::getClassModel() != get_class($model)) {

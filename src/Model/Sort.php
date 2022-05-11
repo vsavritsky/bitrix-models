@@ -27,9 +27,11 @@ class Sort implements \JsonSerializable
     /**
      * @param mixed $sortBy
      */
-    public function setSortBy($sortBy): void
+    public function setSortBy($sortBy): self
     {
         $this->sortBy = $sortBy;
+
+        return $this;
     }
 
     /**
@@ -43,9 +45,11 @@ class Sort implements \JsonSerializable
     /**
      * @param mixed $sortDirection
      */
-    public function setSortDirection($sortDirection): void
+    public function setSortDirection($sortDirection): self
     {
         $this->sortDirection = $sortDirection;
+
+        return $this;
     }
 
     public function getResult() : array

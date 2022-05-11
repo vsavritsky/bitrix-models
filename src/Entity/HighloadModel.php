@@ -18,7 +18,10 @@ class HighloadModel extends BaseModel
             if (is_a($value, Type\DateTime::class)) {
                 $value = $value->format(\DateTimeInterface::ATOM);
             }
-            $this->fields[$key] = $value;
+            $field = new Field();
+            $field->setName($key);
+            $field->setValue($value);
+            $this->fields[$key] = $field;
         }
 
         $this->refresh();
@@ -95,13 +98,13 @@ class HighloadModel extends BaseModel
         $result = null;
 
         if (isset($this->fields[$name])) {
-            return $this->fields[$name];
+            return $this->fields[$name]->getValue();
         }
 
         $name = $this->toCamelCase($name);
 
         if (isset($this->fields[$name])) {
-            return $this->fields[$name];
+            return $this->fields[$name]->getValue();
         }
 
         return null;

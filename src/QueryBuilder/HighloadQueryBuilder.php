@@ -92,10 +92,14 @@ class HighloadQueryBuilder extends BaseQueryBuilder
 
     public function getCountResult(): int
     {
-        $this->pagination->setPerPage(1);
-        $listResult = $this->getResult();
-        $pagination = $listResult->getPagination();
+        $params = [
+            'filter' => $this->getResultFilter($this->filter)->getResult(),
+            'offset' => 0,
+            'limit' => 9999999999
+        ];
 
-        return $pagination->getTotalItems();
+        $res = $this->entityDataClass::getList($params);
+
+        return $res->getSelectedRowsCount();
     }
 }

@@ -20,7 +20,7 @@ class Select implements \JsonSerializable
     public function withProperties() : bool
     {
         $this->withProperties = true;
-        $this->properties = ['*', 'PROPERTY_*'];
+        $this->properties = ['*', 'PROPERTY_*', 'UF_*'];
 
         return $this->withProperties;
     }

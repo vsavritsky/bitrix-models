@@ -40,6 +40,7 @@ class ElementModel extends BaseModel
             $property->setXmlId($value['VALUE_XML_ID']);
             $property->setEnumId($value['VALUE_ENUM_ID']);
             $property->setValue($value['VALUE']);
+            $property->setDescription($value['DESCRIPTION']);
 
             $this->properties[$this->toCamelCase($key)] = $property;
         }
@@ -126,12 +127,12 @@ class ElementModel extends BaseModel
 
     public function getId()
     {
-        return $this->getField('ID');
+        return $this->getField('ID')->getValue();
     }
 
     public function getXmlId()
     {
-        return $this->getField('XML_ID');
+        return $this->getField('XML_ID')->getValue();
     }
 
     public function setXmlId($xmlId)
@@ -141,7 +142,7 @@ class ElementModel extends BaseModel
 
     public function getName()
     {
-        return $this->getField('NAME');
+        return $this->getField('NAME')->getValue();
     }
 
     public function setName($value)
@@ -151,6 +152,10 @@ class ElementModel extends BaseModel
 
     public function getField($name)
     {
+        if (isset($this->properties[$this->toCamelCase($name)])) {
+            return $this->properties[$this->toCamelCase($name)];
+        }
+
         return $this->fields[$this->toCamelCase($name)];
     }
 

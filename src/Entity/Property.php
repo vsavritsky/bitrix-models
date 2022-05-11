@@ -9,6 +9,7 @@ class Property
     protected $xmlId;
     protected $enumId;
     protected $value;
+    protected $description;
 
     /**
      * @return mixed
@@ -88,5 +89,21 @@ class Property
     public function setValue($value): void
     {
         $this->value = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param mixed $description
+     */
+    public function setDescription($description): void
+    {
+        $this->description = $description;
     }
 }
