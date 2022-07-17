@@ -39,6 +39,13 @@ class ElementQueryBuilder extends BaseQueryBuilder
     //        $this->properties[] = $arRes;
     //    }
     //}
+    
+    protected function getResultFilter(Filter $filter = null): Filter
+    {
+        $filter->eq('IBLOCK_ID', $this->class::iblockId());
+		
+        return $filter;
+    }
 
     public function getClassModel()
     {
