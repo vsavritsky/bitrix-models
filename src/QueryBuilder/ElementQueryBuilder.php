@@ -42,7 +42,7 @@ class ElementQueryBuilder extends BaseQueryBuilder
     
     protected function getResultFilter(Filter $filter = null): Filter
     {
-        $filter->eq('IBLOCK_ID', $this->class::iblockId());
+        $filter->eq('IBLOCK_ID', $this->getNewEntity()::iblockId());
 		
         return $filter;
     }
