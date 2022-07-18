@@ -16,6 +16,11 @@ class Sort implements \JsonSerializable
         $this->setSortDirection($sortDirection);
     }
 
+    public static function create(): Sort
+    {
+        return new Sort();
+    }
+
     /**
      * @return mixed
      */

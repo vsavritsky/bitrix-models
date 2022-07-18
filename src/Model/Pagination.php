@@ -4,10 +4,10 @@ namespace BitrixModels\Model;
 
 class Pagination implements \JsonSerializable
 {
-    protected $currentPage = 1;
-    protected $perPage = 20;
-    protected $countElements = 0;
-    protected $totalItems = 0;
+    protected int $currentPage = 1;
+    protected int $perPage = 20;
+    protected int $countElements = 0;
+    protected int $totalItems = 0;
 
     public function __construct($page = 1, $count = 20, $countElements = 0, $totalItems = 0)
     {
