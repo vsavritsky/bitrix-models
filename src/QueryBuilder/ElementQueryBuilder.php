@@ -45,8 +45,6 @@ class ElementQueryBuilder extends BaseQueryBuilder
     {
         $filter->eq('IBLOCK_ID', $this->getNewEntity()::iblockId());
 
-        var_dump($filter);
-
         return $filter;
     }
 
