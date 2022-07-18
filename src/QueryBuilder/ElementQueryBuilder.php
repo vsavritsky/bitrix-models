@@ -2,6 +2,7 @@
 
 namespace BitrixModels\QueryBuilder;
 
+use BitrixModels\Model\Filter;
 use Bitrix\Main\Data\Cache;
 use BitrixModels\Entity\BaseModel;
 use BitrixModels\Model\ListResult;
@@ -39,11 +40,14 @@ class ElementQueryBuilder extends BaseQueryBuilder
     //        $this->properties[] = $arRes;
     //    }
     //}
-    
+
     protected function getResultFilter(Filter $filter = null): Filter
     {
         $filter->eq('IBLOCK_ID', $this->getNewEntity()::iblockId());
-		
+
+        var_dump($filter);
+        die();
+
         return $filter;
     }
 
