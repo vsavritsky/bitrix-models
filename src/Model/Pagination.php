@@ -17,6 +17,11 @@ class Pagination implements \JsonSerializable
         $this->setTotalItems((int)$totalItems);
     }
 
+    public static function create($page = 1, $count = 20, $countElements = 0, $totalItems = 0): Pagination
+    {
+        return new Pagination($page = 1, $count = 20, $countElements = 0, $totalItems = 0);
+    }
+
     /**
      * @return int
      */

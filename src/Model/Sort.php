@@ -10,15 +10,15 @@ class Sort implements \JsonSerializable
     protected $sortBy;
     protected $sortDirection;
 
-    public function __construct($sortBy = null, $sortDirection = null)
+    public function __construct($sortBy = 'ID', $sortDirection = 'ASC')
     {
         $this->setSortBy($sortBy);
         $this->setSortDirection($sortDirection);
     }
 
-    public static function create(): Sort
+    public static function create($sortBy = 'ID', $sortDirection = 'ASC'): Sort
     {
-        return new Sort();
+        return new Sort($sortBy, $sortDirection);
     }
 
     /**
