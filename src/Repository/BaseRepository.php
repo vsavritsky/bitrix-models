@@ -12,6 +12,8 @@ abstract class BaseRepository
 {
     protected $class = null;
 
+    protected string $lastError = '';
+
     public function __construct($class = null)
     {
         if ($class) {
@@ -52,5 +54,21 @@ abstract class BaseRepository
     public function getTagIblock()
     {
         return static::class . static::getClassModel()::iblockId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastError(): string
+    {
+        return $this->lastError;
+    }
+
+    /**
+     * @param string $lastError
+     */
+    public function setLastError(string $lastError): void
+    {
+        $this->lastError = $lastError;
     }
 }

@@ -22,8 +22,6 @@ class HighloadRepository extends BaseRepository
 
     protected $entityDataClass;
 
-    protected $lastError = '';
-
     public function __construct($class)
     {
         parent::__construct($class);
@@ -89,12 +87,6 @@ class HighloadRepository extends BaseRepository
         $result = $this->entityDataClass::add($data);
         return $result;
     }
-
-    public function getLastError()
-    {
-        return $this->lastError;
-    }
-
     public function update($id, $data = [])
     {
         $result = $this->entityDataClass::update($id, $data);

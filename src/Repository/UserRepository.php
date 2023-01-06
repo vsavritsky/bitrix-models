@@ -86,13 +86,23 @@ class UserRepository extends BaseRepository
             return $id;
         }
 
+        if (!$id) {
+            $this->setLastError($user->LAST_ERROR);
+        }
+
         return false;
     }
 
     public function update($id, $fields = [])
     {
+        $this->setLastError('');
+
         $user = new CUser;
         $r = $user->Update($id, $fields);
+
+        if (!$r) {
+            $this->setLastError($user->LAST_ERROR);
+        }
 
         return $r;
     }
