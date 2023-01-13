@@ -9,6 +9,8 @@ use BitrixModels\Model\ListResult;
 use BitrixModels\Model\Pagination;
 use CIBlock;
 use CIBlockElement;
+use Bitrix\Iblock\InheritedProperty\ElementValues;
+use Bitrix\Iblock\InheritedProperty\SectionValues;
 
 class ElementQueryBuilder extends BaseQueryBuilder
 {
@@ -23,23 +25,7 @@ class ElementQueryBuilder extends BaseQueryBuilder
         parent::__construct();
 
         $this->class = $class;
-
-        //$this->loadFields();
-        //$this->loadProperties();
     }
-
-    //protected function loadFields()
-    //{
-    //    $this->fields = CIBlock::GetFields(self::getClassModel()::iblockId());
-    //}
-
-    //protected function loadProperties()
-    //{
-    //    $res = CIBlock::GetProperties(self::getClassModel()::iblockId(), [], []);
-    //    if ($arRes = $res->Fetch()) {
-    //        $this->properties[] = $arRes;
-    //    }
-    //}
 
     protected function getResultFilter(Filter $filter = null): Filter
     {
@@ -81,10 +67,18 @@ class ElementQueryBuilder extends BaseQueryBuilder
                     $element = $ob->GetFields();
                     $element['PROPERTIES'] = $ob->GetProperties();
 
+                    if ($this->select->isWithSeo()) {
+                        $element['SEO'] = $this->getElementSeoConfig($element['ID']);
+                    }
+
                     $list[] = $this->getNewEntity()->mapData($element);
                 }
             } else {
                 while ($element = $res->GetNext()) {
+                    if ($this->select->isWithSeo()) {
+                        $element['SEO'] = $this->getElementSeoConfig($element['ID']);
+                    }
+
                     $list[] = $this->getNewEntity()->mapData($element);
                 }
             }
@@ -122,5 +116,19 @@ class ElementQueryBuilder extends BaseQueryBuilder
         $pagination = $listResult->getPagination();
 
         return $pagination->getTotalItems();
+    }
+
+    protected function getElementSeoConfig($elementId)
+    {
+        $ipropValues = new ElementValues($this->getNewEntity()::iblockId(), $elementId);
+
+        return $ipropValues->getValues();
+    }
+
+    protected function getSectionSeoConfig($elementId)
+    {
+        $ipropValues = new SectionValues($this->getNewEntity()::iblockId(), $elementId);
+
+        return $ipropValues->getValues();
     }
 }

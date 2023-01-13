@@ -7,9 +7,9 @@ use DateTimeInterface;
 
 class ElementModel extends BaseModel
 {
-    protected $originData = [];
+    protected array $originData = [];
 
-    public $fields = [
+    public array $fields = [
         'id' => null,
         'name' => '',
         'xmlId' => '',
@@ -24,10 +24,10 @@ class ElementModel extends BaseModel
         'iblockSectionId' => '',
         'detailPageUrl' => '',
     ];
-    public $properties = [];
+    public array $properties = [];
 
-    protected $updatedFields = [];
-    protected $updatedProperties = [];
+    protected array $updatedFields = [];
+    protected array $updatedProperties = [];
 
     public function mapData($data = []): self
     {
@@ -45,6 +45,15 @@ class ElementModel extends BaseModel
             $this->properties[$this->toCamelCase($key)] = $property;
         }
         unset($data['PROPERTIES']);
+
+        foreach ($data['SEO'] as $key => $value) {
+            $key = $this->toCamelCase($key);
+            $field = new Field();
+            $field->setName($key);
+            $field->setValue($value);
+            $this->fields[$key] = $field;
+        }
+        unset($data['SEO']);
 
         foreach ($data as $key => $value) {
             $key = $this->toCamelCase($key);
@@ -125,12 +134,12 @@ class ElementModel extends BaseModel
         return $properties;
     }
 
-    public function getId()
+    public function getId(): int
     {
-        return $this->getField('ID')->getValue();
+        return (int)$this->getField('ID')->getValue();
     }
 
-    public function getXmlId()
+    public function getXmlId(): ?string
     {
         return $this->getField('XML_ID')->getValue();
     }
@@ -140,7 +149,7 @@ class ElementModel extends BaseModel
         return $this->setField('XML_ID', $xmlId);
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->getField('NAME')->getValue();
     }
@@ -169,7 +178,6 @@ class ElementModel extends BaseModel
         $field = lcfirst($name);
         $action = substr($name, 0, 3);
         $field = substr($name, 3, strlen($name));
-        //$field = $this->toCamelCase($field);
         $field = lcfirst($field);
 
         if ($action == 'get') {

@@ -45,6 +45,7 @@ class ElementRepository extends BaseRepository
 
         $select = new Select();
         $select->withProperties();
+        $select->withSeo();
 
         return $this->getQueryBuilder()->filter($filter)->select($select)->getOneResult();
     }
@@ -53,6 +54,7 @@ class ElementRepository extends BaseRepository
     {
         $select = new Select();
         $select->withProperties();
+        $select->withSeo();
 
         return $this->getQueryBuilder()->filter($filter)->select($select)->sort($sort)->getOneResult();
     }

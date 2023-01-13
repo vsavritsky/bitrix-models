@@ -4,8 +4,9 @@ namespace BitrixModels\Model;
 
 class Select implements \JsonSerializable
 {
-    protected $properties = ['*'];
+    protected array $properties = ['*'];
     protected bool $withProperties = false;
+    protected bool $withSeo = false;
 
     public function __construct($properties = [])
     {
@@ -20,6 +21,11 @@ class Select implements \JsonSerializable
     public function isWithProperties(): bool
     {
         return $this->withProperties;
+    }
+
+    public function isWithSeo(): bool
+    {
+        return $this->withSeo;
     }
 
     public function addField(string $code): self
@@ -40,6 +46,13 @@ class Select implements \JsonSerializable
     {
         $this->withProperties = true;
         $this->properties = ['*', 'PROPERTY_*', 'UF_*'];
+
+        return $this;
+    }
+
+    public function withSeo(): self
+    {
+        $this->withSeo = true;
 
         return $this;
     }

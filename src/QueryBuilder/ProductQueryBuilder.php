@@ -2,17 +2,14 @@
 
 namespace BitrixModels\QueryBuilder;
 
-use BitrixModels\Model\Filter;
 use Bitrix\Main\Data\Cache;
-use BitrixModels\Entity\BaseModel;
 use BitrixModels\Model\ListResult;
 use BitrixModels\Model\Pagination;
 use CIBlock;
-use CIBlockSection;
-use Bitrix\Iblock\InheritedProperty\ElementValues;
-use Bitrix\Iblock\InheritedProperty\SectionValues;
+use CIBlockElement;
+use CCatalogProduct;
 
-class SectionQueryBuilder extends BaseQueryBuilder
+class ProductQueryBuilder extends ElementQueryBuilder
 {
     /** @var string */
     protected $class;
@@ -22,28 +19,9 @@ class SectionQueryBuilder extends BaseQueryBuilder
 
     public function __construct($class)
     {
-        parent::__construct();
+        parent::__construct($class);
 
         $this->class = $class;
-    }
-
-    protected function getResultFilter(Filter $filter = null): Filter
-    {
-        $filter->eq('IBLOCK_ID', $this->getNewEntity()::iblockId());
-
-        return $filter;
-    }
-
-    public function getClassModel()
-    {
-        return $this->class;
-    }
-
-    public function getNewEntity(): BaseModel
-    {
-        $class = self::getClassModel();
-
-        return new $class();
     }
 
     public function getResult(): ListResult
@@ -54,12 +32,12 @@ class SectionQueryBuilder extends BaseQueryBuilder
             $result = $arCacheData['result'];
         } elseif ($cache->startDataCache()) {
             $list = [];
-            $res = CIBlockSection::GetList(
+            $res = CIBlockElement::GetList(
                 $this->sort->getResult(),
                 $this->getResultFilter($this->filter)->getResult(),
                 false,
-                $this->select->getResult(),
                 ["nPageSize" => $this->pagination->getPerPage(), 'iNumPage' => $this->pagination->getCurrentPage()],
+                $this->select->getResult()
             );
 
             if ($this->select->isWithProperties()) {
@@ -68,16 +46,24 @@ class SectionQueryBuilder extends BaseQueryBuilder
                     $element['PROPERTIES'] = $ob->GetProperties();
 
                     if ($this->select->isWithSeo()) {
-                        $element['SEO'] = $this->getSectionSeoConfig($element['ID']);
+                        $element['SEO'] = $this->getElementSeoConfig($element['ID']);
                     }
+
+                    $arPrice = $this->getPriceData($element['ID']);
+                    $element['PRICE'] = $this->getOptimalPrice($arPrice);
+                    $element['DISCOUNT'] = $this->getDiscount($arPrice);
 
                     $list[] = $this->getNewEntity()->mapData($element);
                 }
             } else {
                 while ($element = $res->GetNext()) {
                     if ($this->select->isWithSeo()) {
-                        $element['SEO'] = $this->getSectionSeoConfig($element['ID']);
+                        $element['SEO'] = $this->getElementSeoConfig($element['ID']);
                     }
+
+                    $arPrice = $this->getPriceData($element['ID']);
+                    $element['PRICE'] = $this->getOptimalPrice($arPrice);
+                    $element['DISCOUNT'] = $this->getDiscount($arPrice);
 
                     $list[] = $this->getNewEntity()->mapData($element);
                 }
@@ -95,40 +81,26 @@ class SectionQueryBuilder extends BaseQueryBuilder
         return $result;
     }
 
-    public function getOneResult(): ?BaseModel
+    protected function getPriceData(int $id, int $count = 1): array
     {
-        $this->pagination->setPerPage(1);
-        $listResult = $this->getResult();
+        $arPrice = CCatalogProduct::GetOptimalPrice($id, $count, [], 'N', null, SITE_ID, []);
+        return $arPrice['RESULT_PRICE'];
+    }
 
-        $list = $listResult->getList();
+    protected function getOptimalPrice(array $arPrice): float
+    {
+        return (float)$arPrice['RESULT_PRICE']['DISCOUNT_PRICE'];
+    }
 
-        if (count($list)) {
-            return reset($list);
+    protected function getDiscount(array $arPrice): float
+    {
+        if (!$arPrice['RESULT_PRICE']['BASE_PRICE']) {
+            return 0;
         }
 
-        return null;
-    }
+        $discount = 100 - ($arPrice['RESULT_PRICE']['DISCOUNT_PRICE'] / $arPrice['RESULT_PRICE']['BASE_PRICE']) * 100;
+        $discount = round($discount, 2);
 
-    public function getCountResult(): int
-    {
-        $this->pagination->setPerPage(1);
-        $listResult = $this->getResult();
-        $pagination = $listResult->getPagination();
-
-        return $pagination->getTotalItems();
-    }
-
-    protected function getElementSeoConfig($elementId)
-    {
-        $ipropValues = new ElementValues($this->getNewEntity()::iblockId(), $elementId);
-
-        return $ipropValues->getValues();
-    }
-
-    protected function getSectionSeoConfig($elementId)
-    {
-        $ipropValues = new SectionValues($this->getNewEntity()::iblockId(), $elementId);
-
-        return $ipropValues->getValues();
+        return (float)$discount;
     }
 }

@@ -7,9 +7,9 @@ use DateTimeInterface;
 
 class SectionModel extends BaseModel
 {
-    protected $originData = [];
+    protected array $originData = [];
 
-    public $fields = [
+    public array $fields = [
         'id' => null,
         'name' => '',
         'xmlId' => '',
@@ -24,10 +24,10 @@ class SectionModel extends BaseModel
         'iblockSectionId' => '',
         'detailPageUrl' => '',
     ];
-    public $properties = [];
+    public array $properties = [];
 
-    protected $updatedFields = [];
-    protected $updatedProperties = [];
+    protected array $updatedFields = [];
+    protected array $updatedProperties = [];
 
     public function mapData($data = []): self
     {
@@ -45,6 +45,15 @@ class SectionModel extends BaseModel
             $this->properties[$this->toCamelCase($key)] = $property;
         }
         unset($data['PROPERTIES']);
+
+        foreach ($data['SEO'] as $key => $value) {
+            $key = $this->toCamelCase($key);
+            $field = new Field();
+            $field->setName($key);
+            $field->setValue($value);
+            $this->fields[$key] = $field;
+        }
+        unset($data['SEO']);
 
         foreach ($data as $key => $value) {
             $key = $this->toCamelCase($key);
@@ -125,12 +134,12 @@ class SectionModel extends BaseModel
         return $properties;
     }
 
-    public function getId()
+    public function getId(): int
     {
-        return $this->getField('ID')->getValue();
+        return (int)$this->getField('ID')->getValue();
     }
 
-    public function getXmlId()
+    public function getXmlId(): ?string
     {
         return $this->getField('XML_ID')->getValue();
     }
@@ -140,7 +149,7 @@ class SectionModel extends BaseModel
         return $this->setField('XML_ID', $xmlId);
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->getField('NAME')->getValue();
     }
@@ -150,7 +159,7 @@ class SectionModel extends BaseModel
         return $this->setField('NAME', $value);
     }
 
-    public function getField($name)
+    public function getField($name): string
     {
         if (isset($this->properties[$this->toCamelCase($name)])) {
             return $this->properties[$this->toCamelCase($name)];
@@ -169,7 +178,6 @@ class SectionModel extends BaseModel
         $field = lcfirst($name);
         $action = substr($name, 0, 3);
         $field = substr($name, 3, strlen($name));
-        //$field = $this->toCamelCase($field);
         $field = lcfirst($field);
 
         if ($action == 'get') {
@@ -251,5 +259,19 @@ class SectionModel extends BaseModel
     public function toArray(): array
     {
         return $this->originData;
+    }
+
+    protected function getElementSeoConfig($elementId)
+    {
+        $ipropValues = new ElementValues($this->getNewEntity()::iblockId(), $elementId);
+
+        return $ipropValues->getValues();
+    }
+
+    protected function getSectionSeoConfig($elementId)
+    {
+        $ipropValues = new SectionValues($this->getNewEntity()::iblockId(), $elementId);
+
+        return $ipropValues->getValues();
     }
 }

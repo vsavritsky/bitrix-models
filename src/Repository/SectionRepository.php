@@ -10,7 +10,6 @@ use BitrixModels\Model\ListResult;
 use BitrixModels\Model\Select;
 use BitrixModels\Model\Sort;
 use BitrixModels\QueryBuilder\SectionQueryBuilder;
-use Cache\CacheManager;
 use CIBlock;
 use CIBlockElement;
 
@@ -45,6 +44,7 @@ class SectionRepository extends BaseRepository
 
         $select = new Select();
         $select->withProperties();
+        $select->withSeo();
 
         return $this->getQueryBuilder()->filter($filter)->select($select)->getOneResult();
     }
@@ -53,6 +53,7 @@ class SectionRepository extends BaseRepository
     {
         $select = new Select();
         $select->withProperties();
+        $select->withSeo();
 
         return $this->getQueryBuilder()->filter($filter)->select($select)->sort($sort)->getOneResult();
     }
