@@ -139,6 +139,11 @@ class SectionModel extends BaseModel
         return (int)$this->getField('ID')->getValue();
     }
 
+    public function getCode(): string
+    {
+        return (string)$this->getField('CODE')->getValue();
+    }
+
     public function getXmlId(): ?string
     {
         return $this->getField('XML_ID')->getValue();
@@ -159,7 +164,7 @@ class SectionModel extends BaseModel
         return $this->setField('NAME', $value);
     }
 
-    public function getField($name): string
+    public function getField($name)
     {
         if (isset($this->properties[$this->toCamelCase($name)])) {
             return $this->properties[$this->toCamelCase($name)];

@@ -49,7 +49,11 @@ class ProductQueryBuilder extends ElementQueryBuilder
                         $element['SEO'] = $this->getElementSeoConfig($element['ID']);
                     }
 
+                    $arCatalogData = CCatalogProduct::GetByID($element['ID']);
+                    $element = array_merge($element, $arCatalogData);
+
                     $arPrice = $this->getPriceData($element['ID']);
+
                     $element['PRICE'] = $this->getOptimalPrice($arPrice);
                     $element['DISCOUNT'] = $this->getDiscount($arPrice);
 
@@ -89,16 +93,16 @@ class ProductQueryBuilder extends ElementQueryBuilder
 
     protected function getOptimalPrice(array $arPrice): float
     {
-        return (float)$arPrice['RESULT_PRICE']['DISCOUNT_PRICE'];
+        return (float)$arPrice['DISCOUNT_PRICE'];
     }
 
     protected function getDiscount(array $arPrice): float
     {
-        if (!$arPrice['RESULT_PRICE']['BASE_PRICE']) {
+        if (!$arPrice['BASE_PRICE']) {
             return 0;
         }
 
-        $discount = 100 - ($arPrice['RESULT_PRICE']['DISCOUNT_PRICE'] / $arPrice['RESULT_PRICE']['BASE_PRICE']) * 100;
+        $discount = 100 - ($arPrice['DISCOUNT_PRICE'] / $arPrice['BASE_PRICE']) * 100;
         $discount = round($discount, 2);
 
         return (float)$discount;

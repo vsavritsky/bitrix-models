@@ -139,6 +139,11 @@ class ElementModel extends BaseModel
         return (int)$this->getField('ID')->getValue();
     }
 
+    public function getCode(): string
+    {
+        return (string)$this->getField('CODE')->getValue();
+    }
+
     public function getXmlId(): ?string
     {
         return $this->getField('XML_ID')->getValue();

@@ -52,6 +52,10 @@ class ElementRepository extends BaseRepository
 
     public function findOneByFilter(Filter $filter = null, Sort $sort = null): ?BaseModel
     {
+        if (!$filter) {
+            $filter = new Filter();
+        }
+
         $select = new Select();
         $select->withProperties();
         $select->withSeo();
