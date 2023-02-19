@@ -3,7 +3,6 @@
 namespace BitrixModels\Service;
 
 use CFile;
-use BitrixModels\EnvService;
 
 class PictureService
 {

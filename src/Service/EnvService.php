@@ -1,6 +1,6 @@
 <?php
 
-namespace BitrixModels;
+namespace BitrixModels\Service;
 
 use Bitrix\Main\Config\Option;
 
