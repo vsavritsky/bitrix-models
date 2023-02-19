@@ -4,51 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "56121bb0b7a854e2106fb59648c7a8cf",
+    "content-hash": "13d69d1512a5e1c7f09cd21158a0692f",
     "packages": [
         {
-            "name": "vsavritsky/bitrix-class-loader-helper",
-            "version": "0.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/vsavritsky/bitrix-class-loader-helper.git",
-                "reference": "5be2db1b7399b51781be1c5a418c475fe7a258a2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/vsavritsky/bitrix-class-loader-helper/zipball/5be2db1b7399b51781be1c5a418c475fe7a258a2",
-                "reference": "5be2db1b7399b51781be1c5a418c475fe7a258a2",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "BitrixClassLoaderHelper\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "description": "Библиотека для авторегистрации классов",
-            "support": {
-                "issues": "https://github.com/vsavritsky/bitrix-class-loader-helper/issues",
-                "source": "https://github.com/vsavritsky/bitrix-class-loader-helper/tree/0.0.1"
-            },
-            "time": "2021-08-13T12:45:15+00:00"
-        },
-        {
             "name": "vsavritsky/bitrix-filter-builder",
-            "version": "0.0.2",
+            "version": "0.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vsavritsky/bitrix-filter-builder.git",
-                "reference": "a7e8381959f5807712cda83220a6dda5ac9d8f58"
+                "reference": "20b1bb0e211a3424cd4c8dbb9bb21d65856cb5df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vsavritsky/bitrix-filter-builder/zipball/a7e8381959f5807712cda83220a6dda5ac9d8f58",
-                "reference": "a7e8381959f5807712cda83220a6dda5ac9d8f58",
+                "url": "https://api.github.com/repos/vsavritsky/bitrix-filter-builder/zipball/20b1bb0e211a3424cd4c8dbb9bb21d65856cb5df",
+                "reference": "20b1bb0e211a3424cd4c8dbb9bb21d65856cb5df",
                 "shasum": ""
             },
             "require": {
@@ -64,9 +33,9 @@
             "description": "Библиотека для простого создания фильтра",
             "support": {
                 "issues": "https://github.com/vsavritsky/bitrix-filter-builder/issues",
-                "source": "https://github.com/vsavritsky/bitrix-filter-builder/tree/0.0.2"
+                "source": "https://github.com/vsavritsky/bitrix-filter-builder/tree/0.0.3"
             },
-            "time": "2021-08-18T15:29:17+00:00"
+            "time": "2022-05-11T17:46:25+00:00"
         }
     ],
     "packages-dev": [],
@@ -76,8 +45,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.1"
+        "php": ">=7.4"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.3.0"
 }
