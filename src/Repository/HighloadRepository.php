@@ -22,11 +22,10 @@ class HighloadRepository extends BaseRepository
 
     protected $entityDataClass;
 
-    public function __construct($class)
+    public function __construct($class = null)
     {
         parent::__construct($class);
 
-        $this->class = $class;
         $entity = HL\HighloadBlockTable::compileEntity(HL\HighloadBlockTable::getById($this->getClassModel()::iblockId())->fetch());
         $this->entityDataClass = $entity->getDataClass();
     }
@@ -45,14 +44,17 @@ class HighloadRepository extends BaseRepository
     public function findByExtId($extId): ?BaseModel
     {
         $filter = new Filter();
-        $filter->eq('XML_ID', $extId);
+        $filter->eq('UF_XML_ID', $extId);
 
         return $this->findOneByFilter($filter);
     }
 
     public function findOneByFilter(Filter $filter = null, Sort $sort = null): ?BaseModel
     {
-        return $this->getQueryBuilder()->filter($filter)->sort($sort)->getOneResult();
+		$select = new Select();
+        $select->withProperties();
+
+        return $this->getQueryBuilder()->filter($filter)->select($select)->sort($sort)->getOneResult();
     }
 
     public function countByFilter(Filter $filter = null): int
