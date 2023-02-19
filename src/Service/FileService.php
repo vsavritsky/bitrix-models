@@ -5,7 +5,7 @@ namespace BitrixModels\Service;
 use Bitrix\Main\IO\Path;
 use Bitrix\Main\Text\UtfSafeString;
 use CFile;
-use BitrixServiceContainer\EnvService;
+use BitrixModels\EnvService;
 
 class FileService
 {
