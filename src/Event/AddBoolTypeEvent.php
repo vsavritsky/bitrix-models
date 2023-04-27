@@ -4,7 +4,7 @@ namespace BitrixModels\Event;
 
 use Bitrix\Main\EventManager;
 
-class AddBoolTypeEvent extends AbstactEvent
+class AddBoolTypeEvent extends AbstractEvent
 {
     public static function register(): void
     {
