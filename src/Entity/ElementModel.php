@@ -40,6 +40,15 @@ class ElementModel extends BaseModel
             $property->setXmlId($value['VALUE_XML_ID']);
             $property->setEnumId($value['VALUE_ENUM_ID']);
             $property->setValue($value['VALUE']);
+
+            if ($value['PROPERTY_TYPE'] == 'N') {
+                $property->setValue($value['~VALUE']);
+            }
+
+            if ($value['USER_TYPE'] == 'bool') {
+                $property->setValue((bool)$property->getValue());
+            }
+
             $property->setDescription($value['DESCRIPTION']);
 
             $this->properties[$this->toCamelCase($key)] = $property;
@@ -254,7 +263,7 @@ class ElementModel extends BaseModel
         if (isset($this->fields[$name])) {
             $result = $this->fields[$name]->getValue();
         } elseif (isset($this->properties[$name])) {
-            $method = 'get'.ucfirst($property);
+            $method = 'get' . ucfirst($property);
             $result = $this->properties[$name]->$method();
         }
 
