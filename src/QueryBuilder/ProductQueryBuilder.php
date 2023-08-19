@@ -88,7 +88,7 @@ class ProductQueryBuilder extends ElementQueryBuilder
     protected function getPriceData(int $id, int $count = 1): array
     {
         $arPrice = CCatalogProduct::GetOptimalPrice($id, $count, [], 'N', null, SITE_ID, []);
-        return $arPrice['RESULT_PRICE'];
+        return (array)$arPrice['RESULT_PRICE'];
     }
 
     protected function getOptimalPrice(array $arPrice): float

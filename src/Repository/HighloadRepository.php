@@ -46,7 +46,10 @@ class HighloadRepository extends BaseRepository
         $filter = new Filter();
         $filter->eq('UF_XML_ID', $extId);
 
-        return $this->findOneByFilter($filter);
+        $select = new Select();
+        $select->withProperties();
+
+        return $this->getQueryBuilder()->filter($filter)->select($select)->getOneResult();
     }
 
     public function findOneByFilter(Filter $filter = null, Sort $sort = null): ?BaseModel

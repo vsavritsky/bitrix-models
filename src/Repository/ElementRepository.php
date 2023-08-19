@@ -35,7 +35,11 @@ class ElementRepository extends BaseRepository
         $filter = new Filter();
         $filter->eq('XML_ID', $extId);
 
-        return $this->getQueryBuilder()->filter($filter)->getOneResult();
+        $select = new Select();
+        $select->withProperties();
+        $select->withSeo();
+
+        return $this->getQueryBuilder()->filter($filter)->select($select)->getOneResult();
     }
 
     public function findById($id): ?BaseModel

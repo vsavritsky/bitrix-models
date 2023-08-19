@@ -16,4 +16,14 @@ class ProductModel extends ElementModel
     {
         return (float)$this->getField('DISCOUNT') ? $this->getField('DISCOUNT')->getValue() : 0;
     }
+
+    public function getCatalogQuantity(): float
+    {
+        return (float)$this->getField('CATALOG_QUANTITY');
+    }
+
+    public function getCatalogWeight(): float
+    {
+        return (float)$this->getField('CATALOG_WEIGHT');
+    }
 }

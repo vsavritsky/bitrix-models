@@ -173,6 +173,61 @@ class ElementModel extends BaseModel
         return $this->setField('NAME', $value);
     }
 
+    public function getIblockId(): int
+    {
+        return (int)$this->getField('IBLOCK_ID')->getValue();
+    }
+
+    public function getIblockSectionId(): int
+    {
+        return (int)$this->getField('IBLOCK_SECTION_ID')->getValue();
+    }
+
+    public function getPreviewText(): string
+    {
+        return (string)$this->getField('PREVIEW_TEXT')->getValue();
+    }
+
+    public function getDetailText(): string
+    {
+        return (string)$this->getField('DETAIL_TEXT')->getValue();
+    }
+
+    public function getActiveFrom(): string
+    {
+        return (string)$this->getField('ACTIVE_FROM')->getValue();
+    }
+
+    public function getActiveTo(): string
+    {
+        return (string)$this->getField('ACTIVE_TO')->getValue();
+    }
+
+    public function getPreviewPicture(): int
+    {
+        return (int)$this->getField('PREVIEW_PICTURE')->getValue();
+    }
+
+    public function getDetailPicture(): int
+    {
+        return (int)$this->getField('DETAIL_PICTURE')->getValue();
+    }
+
+    public function getShowCounter(): int
+    {
+        return (int)$this->getField('SHOW_COUNTER')->getValue();
+    }
+
+    public function getDetailPageUrl(): string
+    {
+        return (string)$this->getField('DETAIL_PAGE_URL')->getValue();
+    }
+
+    public function getListPageUrl(): string
+    {
+        return (string)$this->getField('LIST_PAGE_URL')->getValue();
+    }
+
     public function getField($name)
     {
         if (isset($this->properties[$this->toCamelCase($name)])) {

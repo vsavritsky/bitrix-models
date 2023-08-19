@@ -2,6 +2,9 @@
 
 namespace BitrixModels\Entity;
 
+use Bitrix\Highloadblock\HighloadBlockTable;
+use CPHPCache;
+
 class HighloadModel extends BaseModel
 {
     protected $fields = [
@@ -10,6 +13,33 @@ class HighloadModel extends BaseModel
     ];
 
     protected $updatedFields = [];
+
+    public static function iblockId()
+    {
+        $id = static::IBLOCK_ID;
+        $code = static::IBLOCK_CODE;
+
+        if (!$id) {
+            $obCache = new CPHPCache();
+            if ($obCache->InitCache(3600000000, md5($code), DIRECTORY_SEPARATOR . SITE_ID . DIRECTORY_SEPARATOR)) {
+                $vars = $obCache->GetVars();
+                $result = $vars['result'];
+            } elseif ($obCache->StartDataCache()) {
+                $hbt = HighloadBlockTable::getList(['filter' => ['=NAME' => $code]]);
+                $result = $hbt->fetch();
+
+                $obCache->EndDataCache(['result' => $result]);
+            }
+
+            $id = $result['ID'];
+        }
+
+        if (!$id) {
+            throw new LogicException('You must set IBLOCK_ID OR IBLOCK_CODE constant inside a model or override iblockId() method or clear cache');
+        }
+
+        return $id;
+    }
 
     public function mapData($data = []): self
     {

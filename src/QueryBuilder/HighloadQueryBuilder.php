@@ -18,6 +18,8 @@ class HighloadQueryBuilder extends BaseQueryBuilder
     protected $fields = [];
     protected $properties = [];
 
+    protected $hlblock;
+
     protected $entityDataClass;
 
     public function __construct($class)
@@ -25,7 +27,11 @@ class HighloadQueryBuilder extends BaseQueryBuilder
         parent::__construct();
 
         $this->class = $class;
-        $this->hlblock = HL\HighloadBlockTable::getById($this->getClassModel()::iblockId())->fetch();
+
+        if ($this->getClassModel()::iblockId()) {
+            $this->hlblock = HL\HighloadBlockTable::getById($this->getClassModel()::iblockId())->fetch();
+        }
+
         $entity = HL\HighloadBlockTable::compileEntity($this->hlblock);
         $this->entityDataClass = $entity->getDataClass();
     }
