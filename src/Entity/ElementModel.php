@@ -45,6 +45,22 @@ class ElementModel extends BaseModel
                 $property->setValue($value['~VALUE']);
             }
 
+            if ($value['PROPERTY_TYPE'] == 'L' && $value['VALUE'] == 'Y') {
+                $property->setValue(true);
+            }
+
+            if ($value['PROPERTY_TYPE'] == 'S' && is_string($value['~VALUE'])) {
+                $property->setValue(htmlspecialchars_decode($value['~VALUE']));
+            }
+
+            if ($value['USER_TYPE'] == 'HTML') {
+                if ($value['~VALUE']['TEXT']) {
+                    $property->setValue(htmlspecialchars_decode($value['~VALUE']['TEXT']));
+                } else {
+                    $property->setValue('');
+                }
+            }
+
             if ($value['USER_TYPE'] == 'bool') {
                 $property->setValue((bool)$property->getValue());
             }
