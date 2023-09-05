@@ -106,4 +106,18 @@ class Property
     {
         $this->description = $description;
     }
+
+    public function toArray(string $valueCode, string $descriptionCode): array
+    {
+        $list = [];
+        foreach ($this->getValue() as $key => $name) {
+            $code = $this->getDescription()[$key];
+            $list[] = [
+                $valueCode => $name,
+                $descriptionCode => $code,
+            ];
+        }
+
+        return $list;
+    }
 }
