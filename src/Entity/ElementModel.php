@@ -54,7 +54,7 @@ class ElementModel extends BaseModel
             }
 
             if ($value['USER_TYPE'] == 'HTML') {
-                if ($value['~VALUE']['TEXT']) {
+                if (isset($value['~VALUE']['TEXT'])) {
                     $property->setValue(htmlspecialchars_decode($value['~VALUE']['TEXT']));
                 } else {
                     $property->setValue('');
