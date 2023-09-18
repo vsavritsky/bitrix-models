@@ -54,11 +54,17 @@ class ElementModel extends BaseModel
             }
 
             if ($value['USER_TYPE'] == 'HTML') {
-                if (isset($value['~VALUE']['TEXT'])) {
-                    $property->setValue(htmlspecialchars_decode($value['~VALUE']['TEXT']));
+                if ($value['MULTIPLE'] == 'Y') {
+                    $resultValue = [];
+                    foreach ($value['~VALUE'] as $valueTextItem) {
+                        $resultValue[] = htmlspecialchars_decode($valueTextItem['TEXT']);
+                    }
+                } elseif (isset($value['~VALUE']['TEXT']) && empty($value['~VALUE']['TEXT'])) {
+                    $resultValue = htmlspecialchars_decode($value['~VALUE']['TEXT']);
                 } else {
                     $property->setValue('');
                 }
+                $property->setValue($resultValue);
             }
 
             if ($value['USER_TYPE'] == 'bool') {
