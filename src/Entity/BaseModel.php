@@ -54,19 +54,26 @@ class BaseModel
         return $id;
     }
 
-    protected function toCamelCase($name)
+    public static function camel(string $name): string
     {
         $name = mb_strtolower($name);
-        $name = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $name))));
-
-        return $name;
+        return lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $name))));
     }
 
-    protected function toSnakeCase($name)
+    public static function snake(string $name): string
     {
         $name = mb_strtolower($name);
-        $name = mb_strtoupper(preg_replace('/(?<!^)[A-Z]/', '_$0', $name));
-        return $name;
+        return mb_strtoupper(preg_replace('/(?<!^)[A-Z]/', '_$0', $name));
+    }
+
+    public function toCamelCase(string $name): string
+    {
+        return self::camel($name);
+    }
+
+    public function toSnakeCase(string $name): string
+    {
+        return self::snake($name);
     }
 
     public function getField($name)
