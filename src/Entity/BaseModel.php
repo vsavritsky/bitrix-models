@@ -48,7 +48,7 @@ class BaseModel
         }
 
         if (!$id) {
-            throw new LogicException('You must set IBLOCK_ID constant inside a model or override iblockId() method');
+            throw new LogicException(sprintf('You must set IBLOCK_ID OR IBLOCK_CODE constant inside a model or override iblockId() method or clear cache (%s, %s)', static::IBLOCK_ID, static::IBLOCK_CODE));
         }
 
         return $id;
