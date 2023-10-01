@@ -40,6 +40,12 @@ class ElementModel extends BaseModel
             $property->setXmlId($value['VALUE_XML_ID']);
             $property->setEnumId($value['VALUE_ENUM_ID']);
             $property->setValue($value['VALUE']);
+            $type = $value['USER_TYPE'];
+            if (!$type && $value['PROPERTY_TYPE']) {
+                $type = $value['PROPERTY_TYPE'];
+            }
+            $property->setType($type);
+            $property->setMultiple($value['MULTIPLE'] == 'Y');
 
             if ($value['PROPERTY_TYPE'] == 'N') {
                 $property->setValue($value['~VALUE']);
@@ -59,7 +65,7 @@ class ElementModel extends BaseModel
                     foreach ($value['~VALUE'] as $valueTextItem) {
                         $resultValue[] = htmlspecialchars_decode($valueTextItem['TEXT']);
                     }
-                } elseif (isset($value['~VALUE']['TEXT']) && empty($value['~VALUE']['TEXT'])) {
+                } elseif (isset($value['~VALUE']['TEXT']) && !empty($value['~VALUE']['TEXT'])) {
                     $resultValue = htmlspecialchars_decode($value['~VALUE']['TEXT']);
                 } else {
                     $property->setValue('');

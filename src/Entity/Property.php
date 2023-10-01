@@ -4,12 +4,14 @@ namespace BitrixModels\Entity;
 
 class Property
 {
-    protected $name;
-    protected $code;
-    protected $xmlId;
-    protected $enumId;
+    protected string $name = '';
+    protected string $code = '';
+    protected $xmlId = '';
+    protected $enumId = '';
     protected $value;
-    protected $description;
+    protected $description = '';
+    protected string $type = '';
+    protected bool $multiple = false;
 
     /**
      * @return mixed
@@ -105,6 +107,32 @@ class Property
     public function setDescription($description): void
     {
         $this->description = $description;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param mixed $type
+     */
+    public function setType($type): void
+    {
+        $this->type = mb_strtolower($type);
+    }
+
+    public function isMultiple(): bool
+    {
+        return $this->multiple;
+    }
+
+    public function setMultiple(bool $multiple): void
+    {
+        $this->multiple = $multiple;
     }
 
     public function toArray(string $valueCode, string $descriptionCode): array
