@@ -78,4 +78,25 @@ class OrderRepository extends BaseRepository
 
         return $listResult;
     }
+
+    public function findAllByFilter(Select $select = null, Filter $filter = null, Sort $sort = null): ListResult
+    {
+        return $this->findByFilter($select, $filter, $sort, self::MAX_RESULT);
+    }
+
+    public function findAll(Select $select = null, Sort $sort = null): ListResult
+    {
+        $filter = new Filter();
+
+        if (!$sort) {
+            $sort = new Sort();
+        }
+
+        if (!$select) {
+            $select = new Select();
+            $select->withProperties();
+        }
+
+        return $this->findByFilter($select, $filter, $sort, self::MAX_RESULT);
+    }
 }

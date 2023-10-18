@@ -73,6 +73,40 @@ class UserRepository extends BaseRepository
         return $this->getQueryBuilder()->select($select)->filter($filter)->sort($sort)->page($page)->count($count)->getResult();
     }
 
+    public function findAllByFilter(Select $select = null, Filter $filter = null, Sort $sort = null): ListResult
+    {
+        if (!$filter) {
+            $filter = new Filter();
+        }
+
+        if (!$sort) {
+            $sort = new Sort();
+        }
+
+        if (!$select) {
+            $select = new Select();
+            $select->withProperties();
+        }
+
+        return $this->getQueryBuilder()->select($select)->filter($filter)->sort($sort)->count(self::MAX_RESULT)->getResult();
+    }
+
+    public function findAll(Select $select = null, Sort $sort = null): ListResult
+    {
+        $filter = new Filter();
+
+        if (!$sort) {
+            $sort = new Sort();
+        }
+
+        if (!$select) {
+            $select = new Select();
+            $select->withProperties();
+        }
+
+        return $this->getQueryBuilder()->select($select)->filter($filter)->sort($sort)->count(self::MAX_RESULT)->getResult();
+    }
+
     public function save(BaseModel &$model): ?BaseModel
     {
         return null;

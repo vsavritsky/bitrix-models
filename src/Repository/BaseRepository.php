@@ -10,6 +10,8 @@ use BitrixModels\Model\Sort;
 
 abstract class BaseRepository
 {
+    const MAX_RESULT  = 1000000000;
+
     protected $class = null;
 
     protected string $lastError = '';
@@ -25,6 +27,10 @@ abstract class BaseRepository
     {
         return $this->class;
     }
+
+    abstract public function findAllByFilter(Select $select = null, Filter $filter = null, Sort $sort = null): ListResult;
+
+    abstract public function findAll(Select $select = null, Sort $sort = null): ListResult;
 
     abstract public function findByFilter(Select $select = null, Filter $filter = null, Sort $sort = null, int $count = 10, int $page = 1): ListResult;
 

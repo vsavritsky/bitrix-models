@@ -55,7 +55,7 @@ abstract class BaseQueryBuilder
         return $sort;
     }
 
-    protected function getCacheId()
+    protected function getCacheId(): string
     {
         return md5(serialize([$this->select, $this->filter, $this->sort, $this->pagination]));
     }
