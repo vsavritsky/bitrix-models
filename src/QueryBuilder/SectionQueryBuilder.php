@@ -57,7 +57,7 @@ class SectionQueryBuilder extends BaseQueryBuilder
             $res = CIBlockSection::GetList(
                 $this->sort->getResult(),
                 $this->getResultFilter($this->filter)->getResult(),
-                false,
+                true,
                 $this->select->getResult(),
                 ["nPageSize" => $this->pagination->getPerPage(), 'iNumPage' => $this->pagination->getCurrentPage()],
             );
