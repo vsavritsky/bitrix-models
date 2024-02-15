@@ -66,11 +66,12 @@ class OrderRepository extends BaseRepository
             $list[] = Sale\Order::load($arSale['ID']);
         }
 
-        $pagination = new Pagination();
-        $pagination->setPerPage((int)$count);
-        $pagination->setTotalItems(ceil($rsSales->SelectedRowsCount() / $count));
-        $pagination->setCountElements((int)$rsSales->SelectedRowsCount());
-        $pagination->setCurrentPage((int)$page);
+        $pagination = new Pagination(
+            (int)$page,
+            (int)$count,
+            ceil($rsSales->SelectedRowsCount() / $count),
+            $rsSales->SelectedRowsCount()
+        );
 
         $listResult = new ListResult();
         $listResult->setList($list);
