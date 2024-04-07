@@ -6,18 +6,28 @@ use DateTime;
 
 class DateTimeService
 {
+    const DEFAULT_DATETIME_FORMAT = 'd.m.Y H:i:s';
+    const DEFAULT_DATE_FORMAT = 'd.m.Y';
+
+    public static function create(): DateTimeService
+    {
+        return new DateTimeService();
+    }
+
     public static function format($dateString): string
     {
         $date = null;
 
         if (is_a($dateString, DateTime::class)) {
             $date = $dateString;
-        } elseif (is_string($dateString)) {
-            $date = DateTime::createFromFormat('d.m.Y H:i:s', $dateString);
+        } elseif ($dateString && is_string($dateString)) {
+            $date = DateTime::createFromFormat(self::DEFAULT_DATETIME_FORMAT, $dateString);
 
             if (!$date) {
-                $date = DateTime::createFromFormat('d.m.Y', $dateString);
-                $date->setTime(0, 0, 0);
+                $date = DateTime::createFromFormat(self::DEFAULT_DATE_FORMAT, $dateString);
+                if ($date) {
+                    $date->setTime(0, 0, 0);
+                }
             }
         }
 

@@ -9,74 +9,73 @@ use CFile;
 
 class FileService
 {
+    public static function create(): FileService
+    {
+        return new FileService();
+    }
+
+    /** @deprecated */
     public static function getLink($fileId): ?string
     {
-        if (!$fileId) {
-            return null;
-        }
-
-        $link = CFile::GetPath($fileId);
-
-        if (strpos($link, 'http') === false) {
-            $link = EnvService::parameter('DOMAIN') . $link;
-        }
-
-        return $link;
+        return self::create()->get($fileId)->getLink();
     }
 
+    /** @deprecated */
     public static function getExtension($fileId): ?string
     {
+        return self::create()->get($fileId)->getExtension();
+    }
+
+    /** @deprecated */
+    public static function getFormatSize($fileId): ?string
+    {
+        return self::create()->get($fileId)->getFormatSize();
+    }
+
+    /** @deprecated */
+    public static function getSize($fileId): ?int
+    {
+        return self::create()->get($fileId)->getSize();
+    }
+
+    /** @deprecated */
+    public static function getOriginalName($fileId): ?string
+    {
+        return self::create()->get($fileId)->getOriginalName();
+    }
+
+    public function get($fileId): FileInfo
+    {
+        return $this->getFileInfo($fileId);
+    }
+
+    protected function getFileInfo($fileId): FileInfo
+    {
+        $fileInfo = new FileInfo();
+
         if (!$fileId) {
-            return null;
+            return $fileInfo;
+        }
+
+        $arFile = CFile::GetById($fileId);
+        $arFile = $arFile->getNext();
+
+        if (!$arFile) {
+            return $fileInfo;
+        }
+
+        $pos = UtfSafeString::getLastPosition($arFile["ORIGINAL_NAME"], '.');
+        if ($pos !== false) {
+            $fileInfo->setOriginalName(mb_substr($arFile["ORIGINAL_NAME"], 0, $pos));
         }
 
         $link = CFile::GetPath($fileId);
+        $link = UrlService::getFullUrl($link);
 
-        return Path::getExtension($link);
-    }
-
-    public static function getFormatSize($fileId): ?string
-    {
-        $size = self::getSize($fileId);
-        if (!$size) {
-            return null;
-        }
-
-        return CFile::FormatSize($size);
-    }
-
-    public static function getSize($fileId): ?int
-    {
-        if (!$fileId) {
-            return null;
-        }
-
-        $arFile = CFile::GetById($fileId);
-        $arFile = $arFile->getNext();
-        return (int)$arFile["FILE_SIZE"];
-    }
-
-    public static function getOriginalName($fileId): ?string
-    {
-        if (!$fileId) {
-            return null;
-        }
-
-        $arFile = CFile::GetById($fileId);
-        $arFile = $arFile->getNext();
-        $pos = UtfSafeString::getLastPosition($arFile["ORIGINAL_NAME"], '.');
-        if ($pos !== false)
-            return mb_substr($arFile["ORIGINAL_NAME"], 0, $pos);
-        return '';
-    }
-
-    public function getFileInfo($fileId): FileInfo
-    {
-        $fileInfo = new FileInfo();
-        $fileInfo->setLink($this->getLink($fileId));
-        $fileInfo->setExtension($this->getExtension($fileId));
-        $fileInfo->setFormatSize($this->getFormatSize($fileId));
-        $fileInfo->setOriginalName($this->getOriginalName($fileId));
+        $fileInfo->setLink($link);
+        $fileInfo->setExtension(Path::getExtension($link));
+        $fileInfo->setFormatSize(CFile::FormatSize((int)$arFile["FILE_SIZE"]));
+        $fileInfo->setSize((int)$arFile["FILE_SIZE"]);
 
         return $fileInfo;
     }

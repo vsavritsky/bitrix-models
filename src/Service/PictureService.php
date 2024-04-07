@@ -21,6 +21,23 @@ class PictureService
         self::SIZE_REFERENCE => ['width' => 100000, 'height' => 100000],
     ];
 
+    public static function create(): PictureService
+    {
+        return new PictureService();
+    }
+
+    /** @deprecated  */
+    public static function getPicture($imgId, $size = self::SIZE_SMALL, bool $fullPath = false): ?string
+    {
+        return self::create()->get($imgId, $size, $fullPath);
+    }
+
+    /** @deprecated  */
+    public static function getPictureWithWatermark($imgId, $size = self::SIZE_SMALL, bool $fullPath = false): ?string
+    {
+        return self::create()->get($imgId, $size, $fullPath);
+    }
+
     public function setWatermark(string $watermark): void
     {
         $this->watermark = $_SERVER['DOCUMENT_ROOT'] . $watermark;
@@ -45,7 +62,7 @@ class PictureService
         return $this->config[self::SIZE_SMALL];
     }
 
-    public function getPicture($imgId, $size = self::SIZE_SMALL, bool $fullPath = false): ?string
+    public function get($imgId, $size = self::SIZE_SMALL, bool $fullPath = false): ?string
     {
         $compression = $this->compression;
         if ($size == self::SIZE_REFERENCE) {
@@ -57,7 +74,7 @@ class PictureService
         return $this->getPictureWithCustomSize($imgId, $size['width'], $size['height'], $compression, $fullPath);
     }
 
-    public function getPictureWithWatermark($imgId, $size = self::SIZE_SMALL, bool $fullPath = false): ?string
+    public function getWithWatermark($imgId, $size = self::SIZE_SMALL, bool $fullPath = false): ?string
     {
         $compression = $this->compression;
         if ($size == self::SIZE_REFERENCE) {
@@ -103,9 +120,8 @@ class PictureService
 
         $link = $file['src'];
 
-        if (strpos($link, 'http') === false && $fullPath) {
-            $protocol = $_SERVER['PROTOCOL'] = (!empty($_SERVER['HTTPS']) || $_SERVER["SERVER_PORT"] == 443) ? 'https' : 'http';
-            $link = $protocol . '://' . SITE_SERVER_NAME . $link;
+        if ($fullPath) {
+            $link = UrlService::getFullUrl($link);
         }
 
         return $link;
