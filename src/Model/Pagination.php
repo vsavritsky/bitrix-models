@@ -86,12 +86,9 @@ class Pagination implements \JsonSerializable
         $this->totalItems = $totalItems;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
-            //'currentPage' => $this->getCurrentPage(),
-            //'perPage' => $this->getPerPage(),
-            //'totalItems' => $this->getTotalItems(),
             'page' => $this->getCurrentPage(),
             'count' => $this->getPerPage(),
             'countPages' => $this->getCountElements(),

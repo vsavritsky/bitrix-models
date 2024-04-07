@@ -4,7 +4,7 @@ namespace BitrixModels\Service;
 
 class PhoneService
 {
-    public static function clear($phone)
+    public static function clear($phone): string
     {
         $phone = preg_replace('/[^0-9]/', '', $phone);
 
@@ -15,11 +15,9 @@ class PhoneService
         return $phone;
     }
 
-    public static function format($phone)
+    public static function format($phone): string
     {
         $phone = self::clear($phone);
-        $phone = '+' . $phone;
-
-        return $phone;
+        return '+' . $phone;
     }
 }

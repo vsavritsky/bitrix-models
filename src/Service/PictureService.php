@@ -11,47 +11,96 @@ class PictureService
     const SIZE_BIG = 'big';
     const SIZE_REFERENCE = 'reference';
 
-    protected static function getSizeConfig($size): array
-    {
-        switch ($size) {
-            case self::SIZE_SMALL:
-                $config = ['width' => 380, 'height' => 300];
-                break;
-            case self::SIZE_MEDIUM:
-                $config = ['width' => 860, 'height' => 860];
-                break;
-            case self::SIZE_BIG:
-                $config = ['width' => 1920, 'height' => 1920];
-                break;
-            case self::SIZE_REFERENCE:
-                $config = ['width' => 100000, 'height' => 100000];
-                break;
-            default:
-                $config = ['width' => 1000, 'height' => 1000];
-        }
+    protected int $compression = 80;
+    protected ?string $watermark = null;
 
-        return $config;
+    protected array $config = [
+        self::SIZE_SMALL => ['width' => 380, 'height' => 300],
+        self::SIZE_MEDIUM => ['width' => 860, 'height' => 860],
+        self::SIZE_BIG => ['width' => 1920, 'height' => 1920],
+        self::SIZE_REFERENCE => ['width' => 100000, 'height' => 100000],
+    ];
+
+    public function setWatermark(string $watermark): void
+    {
+        $this->watermark = $_SERVER['DOCUMENT_ROOT'] . $watermark;
     }
 
-    public static function getPicture($imgId, $size = self::SIZE_SMALL, bool $fullPath = false): ?string
+    public function setCompression(int $compression): void
     {
-        $compression = 80;
+        $this->compression = $compression;
+    }
+
+    public function setSize(string $code, $width, $height): void
+    {
+        $this->config[$code] = ['width' => $width, 'height' => $height];
+    }
+
+    protected function getSizeConfig($size): array
+    {
+        if (isset($this->config[$size])) {
+            return $this->config[$size];
+        }
+
+        return $this->config[self::SIZE_SMALL];
+    }
+
+    public function getPicture($imgId, $size = self::SIZE_SMALL, bool $fullPath = false): ?string
+    {
+        $compression = $this->compression;
         if ($size == self::SIZE_REFERENCE) {
             $compression = 0;
         }
 
-        $size = self::getSizeConfig($size);
+        $size = $this->getSizeConfig($size);
 
-        return self::getPictureWithCustomSize($imgId, $size['width'], $size['height'], $compression, $fullPath);
+        return $this->getPictureWithCustomSize($imgId, $size['width'], $size['height'], $compression, $fullPath);
     }
 
-    public static function getPictureWithCustomSize($imgId, int $width = 300, int $height = 300, int $compression = 80, bool $fullPath = false): ?string
+    public function getPictureWithWatermark($imgId, $size = self::SIZE_SMALL, bool $fullPath = false): ?string
+    {
+        $compression = $this->compression;
+        if ($size == self::SIZE_REFERENCE) {
+            $compression = 0;
+        }
+
+        $size = $this->getSizeConfig($size);
+
+        return $this->getPictureWithCustomSize($imgId, $size['width'], $size['height'], $compression, $fullPath, $this->watermark);
+    }
+
+    public function getPictureWithCustomSize($imgId, int $width = 300, int $height = 300, int $compression = 80, bool $fullPath = false, ?string $watermarkPath = ''): ?string
     {
         if (!$imgId) {
             return null;
         }
 
-        $file = CFile::ResizeImageGet($imgId, ['width' => $width, 'height' => $height], BX_RESIZE_IMAGE_PROPORTIONAL, true, false, false, $compression);
+        $arWatermark = null;
+        if ($watermarkPath) {
+            $arWatermark = [
+                'name' => 'watermark',
+                'position' => 'center',
+                'type' => 'file',
+                'size' => 'medium',
+                'precision' => 0,
+                'alpha_level' => 80,
+                'file' => $watermarkPath,
+            ];
+        }
+
+        $file = CFile::ResizeImageGet(
+            $imgId,
+            [
+                'width' => $width,
+                'height' => $height
+            ],
+            BX_RESIZE_IMAGE_PROPORTIONAL,
+            true,
+            $arWatermark ? [$arWatermark] : null,
+            false,
+            $compression
+        );
+
         $link = $file['src'];
 
         if (strpos($link, 'http') === false && $fullPath) {
@@ -60,16 +109,5 @@ class PictureService
         }
 
         return $link;
-    }
-
-    public static function getFileSize($imgId): ?int
-    {
-        if (!$imgId) {
-            return null;
-        }
-
-        $fileData = CFile::GetFileArray($imgId);
-
-        return (int)$fileData['FILE_SIZE'];
     }
 }

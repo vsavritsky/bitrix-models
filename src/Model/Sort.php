@@ -66,7 +66,7 @@ class Sort implements \JsonSerializable
         return [];
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'sortBy' => $this->getSortBy(),

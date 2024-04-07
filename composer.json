@@ -4,8 +4,9 @@
   "type": "library",
   "require": {
     "php": ">=7.4",
-    "vsavritsky/bitrix-filter-builder": "^0.0.3",
-    "ext-mbstring": "*"
+    "vsavritsky/bitrix-filter-builder": "^0.0.4",
+    "ext-mbstring": "*",
+    "ext-json": "*"
   },
   "minimum-stability": "stable",
   "autoload": {

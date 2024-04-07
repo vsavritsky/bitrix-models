@@ -4,11 +4,12 @@ namespace BitrixModels\Service;
 
 use Bitrix\Main\IO\Path;
 use Bitrix\Main\Text\UtfSafeString;
+use BitrixModels\Model\FileInfo;
 use CFile;
 
 class FileService
 {
-    public static function getLink($fileId)
+    public static function getLink($fileId): ?string
     {
         if (!$fileId) {
             return null;
@@ -23,7 +24,7 @@ class FileService
         return $link;
     }
 
-    public static function getExtension($fileId)
+    public static function getExtension($fileId): ?string
     {
         if (!$fileId) {
             return null;
@@ -34,7 +35,7 @@ class FileService
         return Path::getExtension($link);
     }
 
-    public static function getFormatSize($fileId)
+    public static function getFormatSize($fileId): ?string
     {
         $size = self::getSize($fileId);
         if (!$size) {
@@ -44,7 +45,7 @@ class FileService
         return CFile::FormatSize($size);
     }
 
-    public static function getSize($fileId)
+    public static function getSize($fileId): ?int
     {
         if (!$fileId) {
             return null;
@@ -55,7 +56,7 @@ class FileService
         return (int)$arFile["FILE_SIZE"];
     }
 
-    public static function getOriginalName($fileId)
+    public static function getOriginalName($fileId): ?string
     {
         if (!$fileId) {
             return null;
@@ -67,5 +68,16 @@ class FileService
         if ($pos !== false)
             return mb_substr($arFile["ORIGINAL_NAME"], 0, $pos);
         return '';
+    }
+
+    public function getFileInfo($fileId): FileInfo
+    {
+        $fileInfo = new FileInfo();
+        $fileInfo->setLink($this->getLink($fileId));
+        $fileInfo->setExtension($this->getExtension($fileId));
+        $fileInfo->setFormatSize($this->getFormatSize($fileId));
+        $fileInfo->setOriginalName($this->getOriginalName($fileId));
+
+        return $fileInfo;
     }
 }

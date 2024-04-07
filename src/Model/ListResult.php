@@ -2,19 +2,21 @@
 
 namespace BitrixModels\Model;
 
+use BitrixModels\Entity\BaseModel;
+
 class ListResult implements \JsonSerializable
 {
-    protected $list;
+    protected array $list;
 
     /** @var Pagination */
-    protected $pagination;
+    protected Pagination $pagination;
 
     public function setList(array $list)
     {
         $this->list = $list;
     }
 
-    public function getList()
+    public function getList(): array
     {
         return $this->list;
     }
@@ -24,16 +26,28 @@ class ListResult implements \JsonSerializable
         $this->pagination = $pagination;
     }
 
-    public function getPagination()
+    public function getPagination(): Pagination
     {
         return $this->pagination;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'list' => $this->getList(),
             'pagination' => $this->getPagination()
         ];
+    }
+
+    public function toArray(): array
+    {
+        /**
+         * @var $row BaseModel
+         */
+        foreach ($this->getList() as $row) {
+            $rows[] = $row->toArray();
+        }
+
+        return $rows ?? [];
     }
 }

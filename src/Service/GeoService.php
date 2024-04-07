@@ -4,7 +4,7 @@ namespace BitrixModels\Service;
 
 class GeoService
 {
-    public static function getCityById($id)
+    public static function getCityById($id): ?array
     {
         $res = \Bitrix\Sale\Location\LocationTable::getList([
             'filter' => [
@@ -32,7 +32,7 @@ class GeoService
         return null;
     }
 
-    public static function getCityByName($name)
+    public static function getCityByName($name): ?array
     {
         $res = \Bitrix\Sale\Location\LocationTable::getList([
             'filter' => [
