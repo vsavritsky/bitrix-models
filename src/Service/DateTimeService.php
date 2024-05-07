@@ -37,4 +37,24 @@ class DateTimeService
 
         return $date->format(DATE_ATOM);
     }
+
+    /**
+     * @throws \Exception
+     */
+    public function toObject($dateString): DateTime
+    {
+        if (is_a($dateString, DateTime::class)) {
+            return $dateString;
+        }
+
+        $date = DateTime::createFromFormat(self::DEFAULT_DATETIME_FORMAT, $dateString);
+        if (!$date) {
+            $date = DateTime::createFromFormat(self::DEFAULT_DATE_FORMAT, $dateString);
+        }
+        if (!$date) {
+            $date = new DateTime($dateString);
+        }
+
+        return $date;
+    }
 }
