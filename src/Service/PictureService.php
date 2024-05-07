@@ -26,13 +26,13 @@ class PictureService
         return new PictureService();
     }
 
-    /** @deprecated  */
+    /** @deprecated */
     public static function getPicture($imgId, $size = self::SIZE_SMALL, bool $fullPath = false): ?string
     {
         return self::create()->get($imgId, $size, $fullPath);
     }
 
-    /** @deprecated  */
+    /** @deprecated */
     public static function getPictureWithWatermark($imgId, $size = self::SIZE_SMALL, bool $fullPath = false): ?string
     {
         return self::create()->get($imgId, $size, $fullPath);
@@ -74,6 +74,20 @@ class PictureService
         return $this->getPictureWithCustomSize($imgId, $size['width'], $size['height'], $compression, $fullPath);
     }
 
+    public function getList(array|false $imgIds, $size = self::SIZE_SMALL, bool $fullPath = false): array
+    {
+        $imgIds = (array)$imgIds;
+
+        $list = [];
+        foreach ($imgIds as $imgId) {
+            $link = $this->get($imgId, $size, $fullPath);
+            if ($link) {
+                $list[] = $link;
+            }
+        }
+        return $list;
+    }
+
     public function getWithWatermark($imgId, $size = self::SIZE_SMALL, bool $fullPath = false): ?string
     {
         $compression = $this->compression;
@@ -84,6 +98,20 @@ class PictureService
         $size = $this->getSizeConfig($size);
 
         return $this->getPictureWithCustomSize($imgId, $size['width'], $size['height'], $compression, $fullPath, $this->watermark);
+    }
+
+    public function getListWithWatermark(array|false $imgIds, $size = self::SIZE_SMALL, bool $fullPath = false): array
+    {
+        $imgIds = (array)$imgIds;
+
+        $list = [];
+        foreach ($imgIds as $imgId) {
+            $link = $this->getWithWatermark($imgId, $size, $fullPath);
+            if ($link) {
+                $list[] = $link;
+            }
+        }
+        return $list;
     }
 
     public function getPictureWithCustomSize($imgId, int $width = 300, int $height = 300, int $compression = 80, bool $fullPath = false, ?string $watermarkPath = ''): ?string

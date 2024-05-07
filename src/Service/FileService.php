@@ -70,7 +70,6 @@ class FileService
         }
 
         $link = CFile::GetPath($fileId);
-        $link = UrlService::getFullUrl($link);
 
         $fileInfo->setLink($link);
         $fileInfo->setExtension(Path::getExtension($link));

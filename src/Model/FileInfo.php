@@ -4,11 +4,11 @@ namespace BitrixModels\Model;
 
 class FileInfo implements \JsonSerializable
 {
-    protected ?string $link;
-    protected ?string $extension;
-    protected ?string $formatSize;
-    protected ?int $size;
-    protected ?string $originalName;
+    protected ?string $link = null;
+    protected ?string $extension = null;
+    protected ?string $formatSize = null;
+    protected ?int $size = null;
+    protected ?string $originalName = null;
 
     public function getOriginalName(): ?string
     {
