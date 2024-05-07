@@ -3,7 +3,7 @@
   "description": "Библиотека для работы с инфоблоками, хайлоадами и т.п как сущностями",
   "type": "library",
   "require": {
-    "php": ">=7.4",
+    "php": ">=8.0",
     "vsavritsky/bitrix-filter-builder": "*",
     "ext-mbstring": "*",
     "ext-json": "*"

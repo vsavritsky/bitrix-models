@@ -16,10 +16,10 @@ class AbstractMapper
     /**
      * @throws \Exception
      */
-    public function map(BaseModel $item = null): array
+    public function map(BaseModel $item = null): array|null
     {
         if (!$item) {
-            return [];
+            return null;
         }
 
         $this->preload([$item]);
