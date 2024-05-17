@@ -7,8 +7,10 @@ class Sort implements \JsonSerializable
     const DESC = 'DESC';
     const ASC = 'ASC';
 
-    protected $sortBy;
-    protected $sortDirection;
+    protected mixed $sortBy;
+    protected mixed $sortDirection;
+
+    protected array $list = [];
 
     public function __construct($sortBy = 'ID', $sortDirection = 'ASC')
     {
@@ -21,10 +23,15 @@ class Sort implements \JsonSerializable
         return new Sort($sortBy, $sortDirection);
     }
 
+    public function addSort($sortBy = 'ID', $sortDirection = 'ASC'): void
+    {
+        $this->list[] = self::create($sortBy, $sortDirection);
+    }
+
     /**
      * @return mixed
      */
-    public function getSortBy()
+    public function getSortBy(): mixed
     {
         return $this->sortBy;
     }
@@ -32,7 +39,7 @@ class Sort implements \JsonSerializable
     /**
      * @param mixed $sortBy
      */
-    public function setSortBy($sortBy): self
+    public function setSortBy(mixed $sortBy): self
     {
         $this->sortBy = $sortBy;
 
@@ -42,7 +49,7 @@ class Sort implements \JsonSerializable
     /**
      * @return mixed
      */
-    public function getSortDirection()
+    public function getSortDirection(): mixed
     {
         return $this->sortDirection;
     }
@@ -50,7 +57,7 @@ class Sort implements \JsonSerializable
     /**
      * @param mixed $sortDirection
      */
-    public function setSortDirection($sortDirection): self
+    public function setSortDirection(mixed $sortDirection): self
     {
         $this->sortDirection = $sortDirection;
 
@@ -60,7 +67,13 @@ class Sort implements \JsonSerializable
     public function getResult() : array
     {
         if ($this->getSortBy()) {
-            return [$this->getSortBy() => $this->getSortDirection()];
+            $result[$this->getSortBy()] = $this->getSortDirection();
+
+            foreach ($this->list as $sortItem) {
+                $result[$sortItem->getSortBy()] = $sortItem->getSortDirection();
+            }
+
+            return $result;
         }
 
         return [];
