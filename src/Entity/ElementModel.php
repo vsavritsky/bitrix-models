@@ -65,12 +65,13 @@ class ElementModel extends BaseModel
                     foreach ($value['~VALUE'] as $valueTextItem) {
                         $resultValue[] = htmlspecialchars_decode($valueTextItem['TEXT']);
                     }
+                    $property->setValue($resultValue);
                 } elseif (isset($value['~VALUE']['TEXT']) && !empty($value['~VALUE']['TEXT'])) {
                     $resultValue = htmlspecialchars_decode($value['~VALUE']['TEXT']);
+                    $property->setValue($resultValue);
                 } else {
                     $property->setValue('');
                 }
-                $property->setValue($resultValue);
             }
 
             if ($value['USER_TYPE'] == 'bool') {
