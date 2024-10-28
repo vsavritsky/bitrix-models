@@ -48,6 +48,20 @@ class FileService
     {
         return $this->getFileInfo($fileId);
     }
+    
+    public function getList(array|false $ids): array
+    {
+        $ids = (array)$ids;
+
+        $list = [];
+        foreach ($ids as $id) {
+            $fileInfo = $this->get($id);
+            if ($fileInfo && $fileInfo->getLink()) {
+                $list[] = $fileInfo;
+            }
+        }
+        return $list;
+    }
 
     protected function getFileInfo($fileId): FileInfo
     {
@@ -70,7 +84,8 @@ class FileService
         }
 
         $link = CFile::GetPath($fileId);
-
+        
+        $fileInfo->setId($fileId);
         $fileInfo->setLink($link);
         $fileInfo->setExtension(Path::getExtension($link));
         $fileInfo->setFormatSize(CFile::FormatSize((int)$arFile["FILE_SIZE"]));
