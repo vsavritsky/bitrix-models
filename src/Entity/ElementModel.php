@@ -29,9 +29,13 @@ class ElementModel extends BaseModel
     protected array $updatedFields = [];
     protected array $updatedProperties = [];
 
+    public bool $optimization = false;
+
     public function mapData($data = []): self
     {
-        $this->originData = $data;
+        if (!$this->optimization) {
+            $this->originData = $data;
+        }
 
         foreach ($data['PROPERTIES'] as $key => $value) {
             $property = new Property();
@@ -80,7 +84,11 @@ class ElementModel extends BaseModel
 
             $property->setDescription($value['DESCRIPTION']);
 
-            $this->properties[$this->toCamelCase($key)] = $property;
+            if (!$this->optimization) {
+                $this->properties[$this->toCamelCase($key)] = $property;
+            } else if ($value['VALUE'] !== null) {
+                $this->properties[$this->toCamelCase($key)] = $property;
+            }
         }
         unset($data['PROPERTIES']);
 
