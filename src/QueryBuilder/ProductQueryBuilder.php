@@ -36,7 +36,7 @@ class ProductQueryBuilder extends ElementQueryBuilder
                 $this->sort->getResult(),
                 $this->getResultFilter($this->filter)->getResult(),
                 false,
-                ["nPageSize" => $this->pagination->getPerPage(), 'iNumPage' => $this->pagination->getCurrentPage()],
+                ["nPageSize" => $this->pagination->getPerPage(), 'iNumPage' => $this->pagination->getCurrentPage(), 'checkOutOfRange' => true],
                 $this->select->getResult()
             );
 

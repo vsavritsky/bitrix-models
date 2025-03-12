@@ -59,7 +59,7 @@ class SectionQueryBuilder extends BaseQueryBuilder
                 $this->getResultFilter($this->filter)->getResult(),
                 true,
                 $this->select->getResult(),
-                ["nPageSize" => $this->pagination->getPerPage(), 'iNumPage' => $this->pagination->getCurrentPage()],
+                ["nPageSize" => $this->pagination->getPerPage(), 'iNumPage' => $this->pagination->getCurrentPage(), 'checkOutOfRange' => true],
             );
 
             if ($this->select->isWithProperties()) {

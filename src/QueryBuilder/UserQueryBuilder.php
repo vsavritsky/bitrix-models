@@ -47,6 +47,7 @@ class UserQueryBuilder extends BaseQueryBuilder
                 'NAV_PARAMS' => [
                     'nPageSize' => $this->pagination->getPerPage(),
                     'iNumPage' => $this->pagination->getCurrentPage(),
+                    'checkOutOfRange' => true
                 ]
             ]
         );
