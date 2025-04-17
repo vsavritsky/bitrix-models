@@ -70,8 +70,15 @@ class HighloadQueryBuilder extends BaseQueryBuilder
                 $list[] = $this->getNewEntity()->mapData($element);
             }
 
-            $pagination = new Pagination($this->pagination->getCurrentPage(), $this->pagination->getPerPage(), ceil($res->getSelectedRowsCount() / $this->pagination->getPerPage()), $res->getSelectedRowsCount());
+            $countParams = [
+                'filter' => $this->getResultFilter($this->filter)->getResult(),
+                'count_total' => true // Важная опция
+            ];
+            $countRes = $this->entityDataClass::getList($countParams);
+            $totalCount = $countRes->getCount();
 
+            $pagination = new Pagination($this->pagination->getCurrentPage(), $this->pagination->getPerPage(), ceil($totalCount / $this->pagination->getPerPage()), $totalCount);
+            
             $result = new ListResult();
             $result->setList($list);
             $result->setPagination($pagination);
