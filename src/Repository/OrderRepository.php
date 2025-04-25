@@ -57,7 +57,7 @@ class OrderRepository extends BaseRepository
 
         if (!$select) {
             $select = new Select();
-            $select->withProperties();
+            $select->withAllProperties();
         }
 
         $list = [];
@@ -95,7 +95,7 @@ class OrderRepository extends BaseRepository
 
         if (!$select) {
             $select = new Select();
-            $select->withProperties();
+            $select->withAllProperties();
         }
 
         return $this->findByFilter($select, $filter, $sort, self::MAX_RESULT);

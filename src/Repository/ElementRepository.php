@@ -36,7 +36,7 @@ class ElementRepository extends BaseRepository
         $filter->eq('XML_ID', $extId);
 
         $select = new Select();
-        $select->withProperties();
+        $select->withAllProperties();
         $select->withSeo();
 
         return $this->getQueryBuilder()->filter($filter)->select($select)->getOneResult();
@@ -48,7 +48,7 @@ class ElementRepository extends BaseRepository
         $filter->eq('ID', $id);
 
         $select = new Select();
-        $select->withProperties();
+        $select->withAllProperties();
         $select->withSeo();
 
         return $this->getQueryBuilder()->filter($filter)->select($select)->getOneResult();
@@ -61,7 +61,7 @@ class ElementRepository extends BaseRepository
         }
 
         $select = new Select();
-        $select->withProperties();
+        $select->withAllProperties();
         $select->withSeo();
 
         return $this->getQueryBuilder()->filter($filter)->select($select)->sort($sort)->getOneResult();
@@ -79,7 +79,7 @@ class ElementRepository extends BaseRepository
 
         if (!$select) {
             $select = new Select();
-            $select->withProperties();
+            $select->withAllProperties();
         }
 
         return $this->getQueryBuilder()->select($select)->filter($filter)->sort($sort)->page($page)->count($count)->getResult();
@@ -173,7 +173,7 @@ class ElementRepository extends BaseRepository
 
         if (!$select) {
             $select = new Select();
-            $select->withProperties();
+            $select->withAllProperties();
         }
 
         return $this->getQueryBuilder()->select($select)->filter($filter)->sort($sort)->count(self::MAX_RESULT)->getResult();
@@ -189,7 +189,7 @@ class ElementRepository extends BaseRepository
 
         if (!$select) {
             $select = new Select();
-            $select->withProperties();
+            $select->withAllProperties();
         }
 
         return $this->getQueryBuilder()->select($select)->filter($filter)->sort($sort)->count(self::MAX_RESULT)->getResult();

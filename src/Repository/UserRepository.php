@@ -45,7 +45,7 @@ class UserRepository extends BaseRepository
         $filter->eq('ID', $id);
 
         $select = new Select();
-        $select->withProperties();
+        $select->withAllProperties();
 
         return $this->getQueryBuilder()->filter($filter)->select($select)->getOneResult();
     }
@@ -62,7 +62,7 @@ class UserRepository extends BaseRepository
 
         if (!$select) {
             $select = new Select();
-            $select->withProperties();
+            $select->withAllProperties();
         }
 
         return $this->getQueryBuilder()->select($select)->filter($filter)->sort($sort)->getOneResult();
@@ -80,7 +80,7 @@ class UserRepository extends BaseRepository
 
         if (!$select) {
             $select = new Select();
-            $select->withProperties();
+            $select->withAllProperties();
         }
 
         return $this->getQueryBuilder()->select($select)->filter($filter)->sort($sort)->page($page)->count($count)->getResult();
@@ -98,7 +98,7 @@ class UserRepository extends BaseRepository
 
         if (!$select) {
             $select = new Select();
-            $select->withProperties();
+            $select->withAllProperties();
         }
 
         return $this->getQueryBuilder()->select($select)->filter($filter)->sort($sort)->count(self::MAX_RESULT)->getResult();
@@ -114,7 +114,7 @@ class UserRepository extends BaseRepository
 
         if (!$select) {
             $select = new Select();
-            $select->withProperties();
+            $select->withAllProperties();
         }
 
         return $this->getQueryBuilder()->select($select)->filter($filter)->sort($sort)->count(self::MAX_RESULT)->getResult();

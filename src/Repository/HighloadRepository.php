@@ -36,7 +36,7 @@ class HighloadRepository extends BaseRepository
         $filter->eq('ID', $id);
 
         $select = new Select();
-        $select->withProperties();
+        $select->withAllProperties();
 
         return $this->getQueryBuilder()->filter($filter)->select($select)->getOneResult();
     }
@@ -47,7 +47,7 @@ class HighloadRepository extends BaseRepository
         $filter->eq('UF_XML_ID', $extId);
 
         $select = new Select();
-        $select->withProperties();
+        $select->withAllProperties();
 
         return $this->getQueryBuilder()->filter($filter)->select($select)->getOneResult();
     }
@@ -55,7 +55,7 @@ class HighloadRepository extends BaseRepository
     public function findOneByFilter(Filter $filter = null, Sort $sort = null): ?BaseModel
     {
 		$select = new Select();
-        $select->withProperties();
+        $select->withAllProperties();
 
         return $this->getQueryBuilder()->filter($filter)->select($select)->sort($sort)->getOneResult();
     }
@@ -81,7 +81,7 @@ class HighloadRepository extends BaseRepository
 
         if (!$select) {
             $select = new Select();
-            $select->withProperties();
+            $select->withAllProperties();
         }
 
         return $this->getQueryBuilder()->select($select)->filter($filter)->sort($sort)->page($page)->count($count)->getResult();
@@ -99,7 +99,7 @@ class HighloadRepository extends BaseRepository
 
         if (!$select) {
             $select = new Select();
-            $select->withProperties();
+            $select->withAllProperties();
         }
 
         return $this->getQueryBuilder()->select($select)->filter($filter)->sort($sort)->count(self::MAX_RESULT)->getResult();
@@ -115,7 +115,7 @@ class HighloadRepository extends BaseRepository
 
         if (!$select) {
             $select = new Select();
-            $select->withProperties();
+            $select->withAllProperties();
         }
 
         return $this->getQueryBuilder()->select($select)->filter($filter)->sort($sort)->count(self::MAX_RESULT)->getResult();
