@@ -6,9 +6,14 @@ class UrlService
 {
     public static function getFullUrl(string $link): string
     {
-        if (strpos($link, 'http') === false) {
+        $domain = SITE_SERVER_NAME;
+        if (!$domain) {
+            $domain = $_SERVER['HTTP_HOST'];
+        }
+
+        if (!str_starts_with($link, 'http')) {
             $protocol = $_SERVER['PROTOCOL'] = (!empty($_SERVER['HTTPS']) || $_SERVER["SERVER_PORT"] == 443) ? 'https' : 'http';
-            $link = $protocol . '://' . SITE_SERVER_NAME . $link;
+            $link = $protocol . '://' . $domain . $link;
         }
 
         return $link;
