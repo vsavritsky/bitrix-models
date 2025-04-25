@@ -37,14 +37,21 @@ class Select implements \JsonSerializable
 
     public function addProperty(string $code): self
     {
+        $this->withProperties();
         $this->properties[] = 'PROPERTY_' . $code;
 
         return $this;
     }
 
-    public function withProperties(): self
+    public function withProperties(bool $value = true): self
     {
-        $this->withProperties = true;
+        $this->withProperties = $value;
+        return $this;
+    }
+
+    public function withAllProperties(): self
+    {
+        $this->withProperties();
         $this->properties = ['*', 'PROPERTY_*', 'UF_*'];
 
         return $this;
