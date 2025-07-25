@@ -13,6 +13,8 @@ class PictureService
 
     protected int $compression = 80;
     protected ?string $watermark = null;
+    protected ?string $watermarkSize = 'medium';
+    protected ?string $watermarkPosition = 'center';
 
     protected array $config = [
         self::SIZE_SMALL => ['width' => 380, 'height' => 300],
@@ -41,6 +43,16 @@ class PictureService
     public function setWatermark(string $watermark): void
     {
         $this->watermark = $_SERVER['DOCUMENT_ROOT'] . $watermark;
+    }
+
+    public function setWatermarkPosition(string $watermarkPosition): void
+    {
+        $this->watermarkPosition = $watermarkPosition;
+    }
+
+    public function setWatermarkSize(string $watermarkSize): void
+    {
+        $this->watermarkSize = $watermarkSize;
     }
 
     public function setCompression(int $compression): void
@@ -124,9 +136,9 @@ class PictureService
         if ($watermarkPath) {
             $arWatermark = [
                 'name' => 'watermark',
-                'position' => 'center',
+                'position' => $this->watermarkPosition,
                 'type' => 'file',
-                'size' => 'medium',
+                'size' => $this->watermarkSize,
                 'precision' => 0,
                 'alpha_level' => 80,
                 'file' => $watermarkPath,
