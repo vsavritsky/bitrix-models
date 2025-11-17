@@ -54,13 +54,24 @@ class ElementQueryBuilder extends BaseQueryBuilder
             $result = $arCacheData['result'];
         } elseif ($cache->startDataCache()) {
             $list = [];
+
+            $currentPage = $this->pagination->getCurrentPage();
+            $perPage = $this->pagination->getPerPage();
+            $offset = ($currentPage - 1) * $perPage; // Вычисляем offset на основе страницы
+
             $res = CIBlockElement::GetList(
-                $this->sort->getResult(),
+                ['ID' => 'ASC'],
                 $this->getResultFilter($this->filter)->getResult(),
                 false,
-                ["nPageSize" => $this->pagination->getPerPage(), 'iNumPage' => $this->pagination->getCurrentPage(), 'checkOutOfRange' => true],
+                [
+                    "nTopCount" => $perPage,
+                    "nOffset" => $offset,
+                    'checkOutOfRange' => true
+                ],
                 $this->select->getResult()
             );
+
+            $totalCount = $res->SelectedRowsCount(); // Общее количество без учета лимита
 
             if ($this->select->isWithProperties()) {
                 while ($ob = $res->GetNextElement()) {
@@ -83,7 +94,12 @@ class ElementQueryBuilder extends BaseQueryBuilder
                 }
             }
 
-            $pagination = new Pagination($this->pagination->getCurrentPage(), $this->pagination->getPerPage(), ceil($res->SelectedRowsCount() / $this->pagination->getPerPage()), $res->SelectedRowsCount());
+            $pagination = new Pagination(
+                $currentPage,
+                $perPage,
+                ceil($totalCount / $perPage),
+                $totalCount
+            );
 
             $result = new ListResult();
             $result->setList($list);

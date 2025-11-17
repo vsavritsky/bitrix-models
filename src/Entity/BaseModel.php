@@ -26,32 +26,43 @@ class BaseModel
      * @throws LogicException
      *
      */
-    public static function iblockId()
+    public static function iblockId(): int
     {
         $id = static::IBLOCK_ID;
         $code = static::IBLOCK_CODE;
 
+        if (!$id && !$code) {
+            throw new LogicException(sprintf('You must set IBLOCK_ID OR IBLOCK_CODE constant inside a model or override iblockId() method (%s, %s)', static::IBLOCK_ID, static::IBLOCK_CODE));
+        }
+
         if (!$id) {
+            $result = null;
+            $cacheId = md5(static::class . '_' . $code);
+            $cacheDir = DIRECTORY_SEPARATOR . (defined('SITE_ID') ? SITE_ID : 'default') . DIRECTORY_SEPARATOR;
+            
             $obCache = new CPHPCache();
-            if ($obCache->InitCache(3600000000, md5($code), DIRECTORY_SEPARATOR . SITE_ID . DIRECTORY_SEPARATOR)) {
+            if ($obCache->InitCache(3600000000, $cacheId, $cacheDir)) {
                 $vars = $obCache->GetVars();
-                $result = $vars['result'];
+                $result = $vars['result'] ?? null;
             } elseif ($obCache->StartDataCache()) {
-                $arIblock = \Bitrix\Iblock\IblockTable::getList(array(
-                    'filter' => array('CODE' => $code),
-                ))->fetch();
-                $result = $arIblock;
+                $arIblock = \Bitrix\Iblock\IblockTable::getList([
+                    'filter' => ['CODE' => $code],
+                ])->fetch();
+                
+                $result = $arIblock ?: null;
                 $obCache->EndDataCache(['result' => $result]);
             }
 
-            $id = $result['ID'];
+            if ($result && isset($result['ID'])) {
+                $id = (int)$result['ID'];
+            }
         }
 
         if (!$id) {
-            throw new LogicException(sprintf('You must set IBLOCK_ID OR IBLOCK_CODE constant inside a model or override iblockId() method or clear cache (%s, %s)', static::IBLOCK_ID, static::IBLOCK_CODE));
+            throw new LogicException(sprintf('Iblock not found by CODE "%s". You must set IBLOCK_ID OR IBLOCK_CODE constant inside a model or override iblockId() method or clear cache (%s, %s)', $code, static::IBLOCK_ID, static::IBLOCK_CODE));
         }
 
-        return $id;
+        return (int)$id;
     }
 
     public static function camel(string $name): string

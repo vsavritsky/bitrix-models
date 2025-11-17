@@ -125,10 +125,10 @@ class UserRepository extends BaseRepository
         return null;
     }
 
-    public function add($fields = [])
+    public function add(array $data = [], array $properties = []): int|false
     {
         $user = new CUser;
-        $id = $user->Add($fields);
+        $id = $user->Add($data);
         if (intval($id) > 0) {
             return $id;
         }
@@ -140,12 +140,12 @@ class UserRepository extends BaseRepository
         return false;
     }
 
-    public function update($id, $fields = [])
+    public function update(int $id, array $data = [], array $properties = []): bool
     {
         $this->setLastError('');
 
         $user = new CUser;
-        $r = $user->Update($id, $fields);
+        $r = $user->Update($id, $data);
 
         if (!$r) {
             $this->setLastError($user->LAST_ERROR);

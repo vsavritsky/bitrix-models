@@ -1,71 +1,131 @@
 # bitrix-models
 
-Библиотека предлагает работать с данные из инфоблоков, хайлоадов битрикса в стиле ООП (в частности с сущностями, репозиториями и прочее)
+Библиотека для работы с данными инфоблоков, хайлоадблоков и пользователями Bitrix в стиле ООП с использованием паттерна Repository.
 
-Основные классы сущностей
-```
-BitrixModels\Entity\ElementModel - класс для элементов инфоблока
-BitrixModels\Entity\SectionModel - класс для разделов инфоблоков 
-BitrixModels\Entity\HighloadModel - класс для элементов хайлоадблока
-BitrixModels\Entity\ProductModel - класс для товаров и тп
-BitrixModels\Entity\UserModel - класс для пользователей
-```
+## Быстрый старт
 
-Классы репозиториев
-```
-BitrixModels\Repository\ElementRepository - класс для выборки элементов инфоблока
-BitrixModels\Repository\SectionRepository - класс для выборки разделов инфоблоков 
-BitrixModels\Repository\HighloadRepository - класс для выборки элементов хайлоадблока
-BitrixModels\Repository\ProductRepository - класс для выборки товаров и тп
-BitrixModels\Repository\UserRepository - класс для выборки пользователей
+### Установка
+
+```bash
+composer require your-vendor/bitrix-models
 ```
 
-Хелперы
-```
-BitrixModels\Service\DateTimeService - класс для форматирования даты
-BitrixModels\Service\FileService - класс для получения ссылки на файл
-BitrixModels\Service\PictureService - класс для быстрого сжатия изображений
-```
+### Основные возможности
 
-```
-// Пример создания сущности новость
+- ✅ Работа с элементами инфоблоков через `ElementModel` и `ElementRepository`
+- ✅ Работа с разделами инфоблоков через `SectionModel` и `SectionRepository`
+- ✅ Работа с товарами через `ProductModel` и `ProductRepository`
+- ✅ Работа с хайлоадблоками через `HighloadModel` и `HighloadRepository`
+- ✅ Работа с пользователями через `UserModel` и `UserRepository`
+- ✅ Гибкая система фильтрации, сортировки и выборки данных
+- ✅ Автоматическое кэширование запросов
+- ✅ Набор сервисов для работы с файлами, изображениями, датами и т.д.
 
+### Пример использования
+
+```php
+// 1. Создайте модель
 namespace App\Entity\Content;
 
 use BitrixModels\Entity\ElementModel;
 
 class News extends ElementModel
 {
-    /**
-     * @var int
-     */
-    const IBLOCK_CODE = 'news'; 
+    const IBLOCK_CODE = 'news';
 }
 
-Пример создания сущности репозитория для новостей
-
+// 2. Создайте репозиторий
 namespace App\Repository\Content;
 
 use App\Entity\Content\News;
+use BitrixModels\Repository\ElementRepository;
 
-class NewsRepository extends \BitrixModels\Repository\ElementRepository
+class NewsRepository extends ElementRepository
 {
     protected $class = News::class;
 }
 
-// получение одного элемента по фильтру с сортировкой
-$repository = new App\Repository\Content\NewsRepository();
-$repository->findOneByFilter(Filter::create()->eq('CODE', 'TEST'), Sort::create('SORT', 'DESC'));
+// 3. Используйте репозиторий
+use BitrixModels\Model\Filter;
+use BitrixModels\Model\Sort;
+use BitrixModels\Model\Select;
 
-// получение списка с пагинацией по фильтру
-$repository = new App\Repository\Content\NewsRepository();
-$result = $repository->findByFilter(Select::create()->withProperties(), Filter::create()->eq('CODE', 'TEST'), Sort::create('SORT', 'DESC'), 1, 20);
-foreach($result->getList() as $item) {
-  
+$repository = new NewsRepository();
+
+// Поиск по ID
+$news = $repository->findById(123);
+
+// Поиск с фильтром и сортировкой
+$filter = Filter::create()->eq('ACTIVE', 'Y');
+$sort = Sort::create('SORT', Sort::ASC);
+$news = $repository->findOneByFilter($filter, $sort);
+
+// Поиск с пагинацией
+$select = Select::create()->withAllProperties()->withSeo();
+$result = $repository->findByFilter($select, $filter, $sort, 20, 1);
+
+foreach ($result->getList() as $news) {
+    echo $news->getName();
 }
-$pagination = $result->getPagination();
 
+// Добавление элемента
+$id = $repository->add([
+    'NAME' => 'Новая новость',
+    'ACTIVE' => 'Y',
+], [
+    'COLOR' => 'red',
+]);
+
+// Обновление элемента
+$repository->update($id, [
+    'NAME' => 'Обновленное название',
+]);
 ```
+
+## Документация
+
+📖 **[Полная документация](docs/README.md)** - подробное описание всех сущностей, репозиториев и примеры использования
+
+📚 **[Документация по сервисам](docs/service.md)** - описание всех доступных сервисов
+
+## Основные классы
+
+### Сущности (Модели)
+
+- `BitrixModels\Entity\ElementModel` - элементы инфоблоков
+- `BitrixModels\Entity\SectionModel` - разделы инфоблоков
+- `BitrixModels\Entity\ProductModel` - товары (расширяет ElementModel)
+- `BitrixModels\Entity\HighloadModel` - элементы хайлоадблоков
+- `BitrixModels\Entity\UserModel` - пользователи
+
+### Репозитории
+
+- `BitrixModels\Repository\ElementRepository` - работа с элементами
+- `BitrixModels\Repository\SectionRepository` - работа с разделами
+- `BitrixModels\Repository\ProductRepository` - работа с товарами
+- `BitrixModels\Repository\HighloadRepository` - работа с хайлоадблоками
+- `BitrixModels\Repository\UserRepository` - работа с пользователями
+
+### Модели данных
+
+- `BitrixModels\Model\Filter` - фильтрация запросов
+- `BitrixModels\Model\Sort` - сортировка результатов
+- `BitrixModels\Model\Select` - выборка полей и свойств
+- `BitrixModels\Model\ListResult` - результат выборки с пагинацией
+
+### Сервисы
+
+- `BitrixModels\Service\DateTimeService` - форматирование дат
+- `BitrixModels\Service\FileService` - работа с файлами
+- `BitrixModels\Service\PictureService` - работа с изображениями
+- `BitrixModels\Service\PhoneService` - форматирование телефонов
+- `BitrixModels\Service\GeoService` - работа с геоданными
+- `BitrixModels\Service\UrlService` - работа с URL
+- `BitrixModels\Service\SettingsService` - работа с настройками
+
+## Лицензия
+
+См. файл [LICENSE](LICENSE)
 
 
 

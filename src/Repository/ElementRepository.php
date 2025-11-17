@@ -11,7 +11,6 @@ use BitrixModels\Model\Select;
 use BitrixModels\Model\Sort;
 use BitrixModels\QueryBuilder\ElementQueryBuilder;
 use Cache\CacheManager;
-use CIBlock;
 use CIBlockElement;
 
 class ElementRepository extends BaseRepository
@@ -122,43 +121,46 @@ class ElementRepository extends BaseRepository
         return null;
     }
 
-    public function add($fields = [], $properties = [])
+    public function add(array $data = [], array $properties = []): int|false
     {
         $el = new CIBlockElement;
 
-        if ($this->getClassModel()::IBLOCK_ID) {
-            $fields['IBLOCK_ID'] = $this->getClassModel()::IBLOCK_ID;
-        } else {
-            $res = CIBlock::GetList([], ['=CODE' => $this->getClassModel()::IBLOCK_CODE], false);
-            if ($arrc = $res->Fetch()) {
-                $fields['IBLOCK_ID'] = $arrc['ID'];
-            }
-        }
+        $data['IBLOCK_ID'] = $this->getClassModel()::iblockId();
+        $data['PROPERTY_VALUES'] = $properties;
 
-        $fields['PROPERTY_VALUES'] = $properties;
+        $this->setLastError('');
 
-        if ($fields) {
-            $res = $el->Add($fields);
+        $res = $el->Add($data);
+        
+        if (!$res) {
+            $this->setLastError($el->LAST_ERROR);
         }
 
         return $res;
     }
 
-    public function update($id, $fields = [], $properties = [])
+    public function update(int $id, array $data = [], array $properties = []): bool
     {
         $el = new \CIBlockElement;
+        $result = false;
 
-        if ($fields) {
-            $res = $el->Update($id, $fields);
+        $this->setLastError('');
+
+        if ($data) {
+            $result = $el->Update($id, $data);
+            
+            if (!$result) {
+                $this->setLastError($el->LAST_ERROR);
+            }
         }
 
         foreach ($properties as $propertyKey => $propertyValue) {
-            \CIBlockElement::SetPropertyValuesEx($id, null, [$propertyKey => $propertyValue]);
+            \CIBlockElement::SetPropertyValuesEx($id, $this->getClassModel()::iblockId(), [$propertyKey => $propertyValue]);
         }
 
         //CacheManager::clearByTag($id);
 
-        return $res;
+        return $result;
     }
 
     public function findAllByFilter(Select $select = null, Filter $filter = null, Sort $sort = null): ListResult

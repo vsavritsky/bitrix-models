@@ -13,9 +13,9 @@ class Select implements \JsonSerializable
         $this->properties = $properties;
     }
 
-    public static function create(): Select
+    public static function create($properties = []): Select
     {
-        return new Select();
+        return new Select($properties);
     }
 
     public function isWithProperties(): bool

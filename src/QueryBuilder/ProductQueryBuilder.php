@@ -32,13 +32,28 @@ class ProductQueryBuilder extends ElementQueryBuilder
             $result = $arCacheData['result'];
         } elseif ($cache->startDataCache()) {
             $list = [];
+
+            $currentPage = $this->pagination->getCurrentPage();
+            $perPage = $this->pagination->getPerPage();
+            $offset = ($currentPage - 1) * $perPage; // Вычисляем offset на основе страницы
+
             $res = CIBlockElement::GetList(
                 $this->sort->getResult(),
                 $this->getResultFilter($this->filter)->getResult(),
                 false,
-                ["nPageSize" => $this->pagination->getPerPage(), 'iNumPage' => $this->pagination->getCurrentPage(), 'checkOutOfRange' => true],
+                [
+                    "nTopCount" => $perPage,
+                    "nOffset" => $offset,
+                    'checkOutOfRange' => true
+                ],
                 $this->select->getResult()
             );
+
+            $totalCount = $res->SelectedRowsCount(); // Общее количество без учета лимита
+
+            // Собираем все элементы и их ID
+            $elements = [];
+            $elementIds = [];
 
             if ($this->select->isWithProperties()) {
                 while ($ob = $res->GetNextElement()) {
@@ -49,15 +64,8 @@ class ProductQueryBuilder extends ElementQueryBuilder
                         $element['SEO'] = $this->getElementSeoConfig($element['ID']);
                     }
 
-                    $arCatalogData = CCatalogProduct::GetByID($element['ID']);
-                    $element = array_merge($element, $arCatalogData);
-
-                    $arPrice = $this->getPriceData($element['ID']);
-
-                    $element['PRICE'] = $this->getOptimalPrice($arPrice);
-                    $element['DISCOUNT'] = $this->getDiscount($arPrice);
-
-                    $list[] = $this->getNewEntity()->mapData($element);
+                    $elements[$element['ID']] = $element;
+                    $elementIds[] = $element['ID'];
                 }
             } else {
                 while ($element = $res->GetNext()) {
@@ -65,15 +73,40 @@ class ProductQueryBuilder extends ElementQueryBuilder
                         $element['SEO'] = $this->getElementSeoConfig($element['ID']);
                     }
 
-                    $arPrice = $this->getPriceData($element['ID']);
-                    $element['PRICE'] = $this->getOptimalPrice($arPrice);
-                    $element['DISCOUNT'] = $this->getDiscount($arPrice);
-
-                    $list[] = $this->getNewEntity()->mapData($element);
+                    $elements[$element['ID']] = $element;
+                    $elementIds[] = $element['ID'];
                 }
             }
 
-            $pagination = new Pagination($this->pagination->getCurrentPage(), $this->pagination->getPerPage(), ceil($res->SelectedRowsCount() / $this->pagination->getPerPage()), $res->SelectedRowsCount());
+            // Получаем данные каталога для всех элементов сразу
+            $catalogData = $this->getCatalogDataBatch($elementIds);
+
+            // Получаем цены для всех элементов сразу
+            $pricesData = $this->getPricesDataBatch($elementIds);
+
+            // Объединяем данные
+            foreach ($elements as $id => $element) {
+                if (isset($catalogData[$id])) {
+                    $element = array_merge($element, $catalogData[$id]);
+                }
+
+                if (isset($pricesData[$id])) {
+                    $element['PRICE'] = $this->getOptimalPrice($pricesData[$id]);
+                    $element['DISCOUNT'] = $this->getDiscount($pricesData[$id]);
+                } else {
+                    $element['PRICE'] = 0;
+                    $element['DISCOUNT'] = 0;
+                }
+
+                $list[] = $this->getNewEntity()->mapData($element);
+            }
+
+            $pagination = new Pagination(
+                $currentPage,
+                $perPage,
+                ceil($totalCount / $perPage),
+                $totalCount
+            );
 
             $result = new ListResult();
             $result->setList($list);
@@ -83,6 +116,45 @@ class ProductQueryBuilder extends ElementQueryBuilder
         }
 
         return $result;
+    }
+
+    protected function getCatalogDataBatch(array $ids): array
+    {
+        if (empty($ids)) {
+            return [];
+        }
+
+        $catalogData = [];
+        $res = CCatalogProduct::GetList(
+            [],
+            ['ID' => $ids],
+            false,
+            false,
+            ['ID', 'QUANTITY', 'WEIGHT', 'WIDTH', 'LENGTH', 'HEIGHT', 'MEASURE', 'VAT_ID', 'VAT_INCLUDED', 'CAN_BUY_ZERO', 'NEGATIVE_AMOUNT_TRACE', 'SUBSCRIBE']
+        );
+
+        while ($item = $res->Fetch()) {
+            $catalogData[$item['ID']] = $item;
+        }
+
+        return $catalogData;
+    }
+
+    protected function getPricesDataBatch(array $ids): array
+    {
+        if (empty($ids)) {
+            return [];
+        }
+
+        $pricesData = [];
+        foreach ($ids as $id) {
+            $arPrice = CCatalogProduct::GetOptimalPrice($id, 1, [], 'N', null, SITE_ID, []);
+            if (isset($arPrice['RESULT_PRICE'])) {
+                $pricesData[$id] = (array)$arPrice['RESULT_PRICE'];
+            }
+        }
+
+        return $pricesData;
     }
 
     protected function getPriceData(int $id, int $count = 1): array

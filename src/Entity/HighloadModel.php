@@ -142,6 +142,18 @@ class HighloadModel extends BaseModel
 
     public function toArray(): array
     {
-        return [];
+        $result = [];
+        
+        foreach ($this->fields as $key => $value) {
+            $snakeKey = $this->toSnakeCase($key);
+            
+            if ($value instanceof Field) {
+                $result[$key] = $value->getValue();
+            } else {
+                $result[$key] = $value;
+            }
+        }
+        
+        return $result;
     }
 }

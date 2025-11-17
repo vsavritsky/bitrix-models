@@ -12,6 +12,7 @@ use BitrixModels\Model\Sort;
 use BitrixModels\QueryBuilder\SectionQueryBuilder;
 use CIBlock;
 use CIBlockElement;
+use CIBlockSection;
 
 class SectionRepository extends BaseRepository
 {
@@ -119,13 +120,46 @@ class SectionRepository extends BaseRepository
         return null;
     }
 
-    public function add($fields = [], $properties = [])
+    public function add(array $data = [], array $properties = []): int|false
     {
+        $section = new CIBlockSection;
+
+        if ($this->getClassModel()::IBLOCK_ID) {
+            $data['IBLOCK_ID'] = $this->getClassModel()::IBLOCK_ID;
+        } else {
+            $res = CIBlock::GetList([], ['=CODE' => $this->getClassModel()::IBLOCK_CODE], false);
+            if ($arrc = $res->Fetch()) {
+                $data['IBLOCK_ID'] = $arrc['ID'];
+            }
+        }
+
+        if ($data) {
+            $sectionId = $section->Add($data);
+            
+            if ($sectionId && !empty($properties)) {
+                CIBlockSection::SetPropertyValues($sectionId, $data['IBLOCK_ID'], $properties);
+            }
+            
+            return $sectionId;
+        }
+
         return false;
     }
 
-    public function update($id, $fields = [], $properties = [])
+    public function update(int $id, array $data = [], array $properties = []): bool
     {
-        return null;
+        $section = new CIBlockSection;
+        $result = true;
+
+        if (!empty($data)) {
+            $result = $section->Update($id, $data);
+        }
+
+        if ($result && !empty($properties)) {
+            $iblockId = $data['IBLOCK_ID'] ?? $this->getClassModel()::iblockId();
+            CIBlockSection::SetPropertyValuesEx($id, $iblockId, $properties);
+        }
+
+        return $result;
     }
 }

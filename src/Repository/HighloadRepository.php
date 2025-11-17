@@ -121,14 +121,41 @@ class HighloadRepository extends BaseRepository
         return $this->getQueryBuilder()->select($select)->filter($filter)->sort($sort)->count(self::MAX_RESULT)->getResult();
     }
 
-    public function add($data)
+    public function add(array $data = [], array $properties = []): int|false
     {
+        $this->setLastError('');
+        
         $result = $this->entityDataClass::add($data);
-        return $result;
+        
+        if (!$result->isSuccess()) {
+            $errorCollection = $result->getErrorCollection();
+            $errors = [];
+            foreach ($errorCollection as $error) {
+                $errors[] = $error->getMessage();
+            }
+            $this->setLastError(implode('; ', $errors));
+            return false;
+        }
+        
+        return $result->getId();
     }
-    public function update($id, $data = [])
+    
+    public function update(int $id, array $data = [], array $properties = []): bool
     {
+        $this->setLastError('');
+        
         $result = $this->entityDataClass::update($id, $data);
-        return $result;
+        
+        if (!$result->isSuccess()) {
+            $errorCollection = $result->getErrorCollection();
+            $errors = [];
+            foreach ($errorCollection as $error) {
+                $errors[] = $error->getMessage();
+            }
+            $this->setLastError(implode('; ', $errors));
+            return false;
+        }
+        
+        return true;
     }
 }

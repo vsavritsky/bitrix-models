@@ -42,19 +42,14 @@ abstract class BaseRepository
 
     abstract public function findByExtId($extId): ?BaseModel;
 
+    abstract public function add(array $data = [], array $properties = []): int|false;
+
+    abstract public function update(int $id, array $data = [], array $properties = []): bool;
+
     public function refresh(BaseModel &$model): BaseModel
     {
         $model = $this->findById($model->getId()->getValue());
         return $model;
-    }
-
-    public function save(BaseModel &$model): ?BaseModel
-    {
-        if (static::getClassModel() != get_class($model)) {
-            throw new \ErrorException();
-        }
-
-        return null;
     }
 
     public function getTagIblock()
